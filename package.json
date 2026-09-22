@@ -1,9 +1,17 @@
 {
   "name": "ccc-crew-server",
   "private": true,
-  "version": "1.0.0",
-  "description": "Private crew server for CCC General Database",
+  "version": "3.0.0",
+  "description": "Crypt0 Cr3w Central (CCC) - Real-time Intelligence Platform",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "build": "npm --prefix ccc install && npm --prefix ccc run build",
+    "start": "node server.js",
+    "server": "node server.js",
+    "client": "npm --prefix ccc run dev",
+    "tunnel": "npx --yes localtunnel --port 8787"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

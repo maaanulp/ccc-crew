@@ -1,0 +1,8 @@
+node_modules
+ccc/node_modules
+data/
+.git
+.agent-cache
+capturas
+*.log
+

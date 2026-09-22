@@ -1,0 +1,4 @@
+{
+    "localaipilot.standalone.ollamaCodeModel": "qwen2.5-coder:7b",
+    "localaipilot.standalone.ollamaModel": "deepseek-r1:1.5b"
+}

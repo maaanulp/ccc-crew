@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ccc-crew
+    runtime: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: CREW_ID
+        generateValue: true
+      - key: CREW_PASSWORD
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        generateValue: true
+

@@ -1,0 +1,8 @@
+node_modules/
+ccc/node_modules/
+data/
+*.log
+.env
+.agent-cache/
+.DS_Store
+
