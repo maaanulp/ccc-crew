@@ -1,0 +1,9 @@
+{
+  "name": "ccc-crew-server",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Private crew server for CCC General Database",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

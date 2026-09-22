@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crypt0 Cr3w Central (CCC)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+:root{
+  --bg:#030805;--tg:#00ff66;--dg:#001a08;--bg2:#008833;--br:#88ffbb;
+  --tm:#66ff99;--rd:#ff3333;--yl:#33ffcc;--gd:#ffcc00;--pu:#aa66ff;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--tm);font-family:'Share Tech Mono','Courier New',monospace;padding:15px;margin:0;overflow-x:hidden}
+#matrixCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:.35;pointer-events:none}
+body::before{content:" ";display:block;position:fixed;inset:0;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.25) 50%),linear-gradient(90deg,rgba(255,0,0,.03),rgba(0,255,0,.01),rgba(0,0,255,.03));z-index:9999;background-size:100% 3px,6px 100%;pointer-events:none}
+#diagBanner{display:none;position:fixed;top:0;left:0;right:0;background:#2a0000;color:#ff8888;border-bottom:2px solid var(--rd);padding:8px 12px;font-size:12px;z-index:10000;white-space:pre-wrap;max-height:40vh;overflow-y:auto}
+h1,h2{color:var(--tg);border-bottom:1px dashed var(--bg2);padding-bottom:5px;margin-top:15px;font-size:16px;text-shadow:0 0 6px rgba(0,255,102,.5);letter-spacing:1px}
+h1{font-size:19px;position:relative}
+.lang-toggle{position:absolute;right:0;top:0;background:#010c04;border:1px solid var(--bg2);color:var(--tg);padding:4px 8px;font-size:11px;cursor:pointer;text-transform:uppercase;width:auto;margin:0;letter-spacing:1px}
+.lang-toggle:hover{background:var(--tg);color:#000}
+.panel{border:1px solid var(--bg2);background:rgba(0,20,8,.85);padding:14px;margin-bottom:15px;border-radius:4px;box-shadow:0 0 10px rgba(0,136,51,.15) inset,0 0 8px rgba(0,255,102,.1)}
+input,textarea,button,select{background:#010c04;color:var(--br);border:1px solid var(--bg2);padding:9px;width:100%;margin-top:5px;margin-bottom:10px;font-family:inherit;font-size:13px;outline:none;transition:all .2s}
+input:focus,textarea:focus,select:focus{border-color:var(--tg);box-shadow:0 0 8px rgba(0,255,102,.4)}
+textarea{resize:vertical}
+input[type=file]{display:none}
+.file-upload-btn{display:block;background:#010c04;color:var(--tg);border:1px solid var(--bg2);padding:12px;text-align:center;cursor:pointer;font-weight:bold;text-transform:uppercase;margin:5px 0 10px;font-size:13px;letter-spacing:1px}
+.file-upload-btn:hover{background:var(--tg);color:#000}
+.field-label{display:block;font-size:11px;color:var(--yl);text-transform:uppercase;margin:10px 0 0}
+#pasteZone{border:1px dashed var(--bg2);background:#010a04;padding:14px 10px;font-size:12px;color:var(--tm);text-align:center;min-height:26px;margin:6px 0 12px;cursor:text;border-radius:3px}
+#pasteZone:focus{outline:none;border-color:var(--tg)}
+button{cursor:pointer;font-weight:bold;text-transform:uppercase;transition:all .2s}
+button:hover{background:var(--tg);color:#000}
+.btn-danger{border-color:var(--rd);color:var(--rd)}
+.btn-danger:hover{background:var(--rd);color:#000}
+.btn-purple{border-color:var(--pu);color:var(--pu)}
+.btn-purple:hover{background:var(--pu);color:#000}
+.btn-gold{border-color:var(--gd);color:var(--gd)}
+.btn-gold:hover{background:var(--gd);color:#000}
+.btn-small{padding:6px 8px;font-size:11px;margin:2px 0}
+.grid-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px}
+.button-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:5px}
+.external-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.external-actions button{width:auto}
+.row-end{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.row-end button{width:auto}
+.crew-line{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.crew-line .lbl{color:var(--tg);font-size:11px;font-weight:bold;white-space:nowrap}
+.crew-line input{flex:1 1 150px;width:auto;margin:0;padding:6px 8px;font-size:11px}
+.crew-line button{width:auto;margin:0;padding:6px 10px;font-size:10px}
+.crew-status{color:var(--tg);font-size:11px;white-space:nowrap}
+.account-bar{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--dg);border:1px solid var(--bg2);border-radius:3px;font-size:12px;cursor:pointer}
+.account-bar:hover{background:#002910}
+.account-bar .key{color:var(--yl);text-transform:uppercase;font-size:10px;letter-spacing:1px}
+.account-bar .val{color:var(--br)}
+.account-bar .hint{color:var(--tm);opacity:.55;font-size:10px;margin-left:auto}
+.account-bar.empty .val{opacity:.5;font-style:italic}
+.account-bar .disconnect{display:none;width:auto;margin:0}
+.account-bar.connected .disconnect{display:inline-block}
+.loadout-bar{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center;background:var(--dg);border:1px solid var(--bg2);padding:8px 10px;border-radius:3px;margin-bottom:10px}
+.loadout-bar .lbl{color:var(--yl);font-size:11px;text-transform:uppercase;letter-spacing:1px;font-weight:bold}
+.loadout-field{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.loadout-field span{color:var(--tm);font-size:11px;white-space:nowrap}
+.loadout-field input{width:60px;margin:0;padding:5px;text-align:center;font-size:13px;font-weight:bold}
+table.intel{width:100%;table-layout:fixed;border-collapse:collapse;font-size:11px;margin-top:10px;min-width:600px}
+table.intel th,table.intel td{border:1px solid var(--bg2);padding:5px 3px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2}
+table.intel th{background:var(--dg);color:var(--tg);font-size:9px;user-select:none;text-align:center;cursor:pointer;position:relative}
+table.intel th.sortable:hover,table.intel th.sort-active{background:#002910;color:#fff}
+table.intel th .sort-arrow{font-size:8px;opacity:.75;margin-left:2px}
+table.intel td.num{text-align:right;font-size:10px;padding-right:4px;font-variant-numeric:tabular-nums}
+table.intel td.ctr{text-align:center}
+table.intel td.ip-cell{font-size:10px;padding-left:4px;letter-spacing:-.3px;color:var(--yl)}
+table.intel td.name-cell{font-size:11px;padding:5px}
+table.intel tr:hover td{background:rgba(0,255,102,.04)}
+.clickable{color:var(--yl);cursor:pointer;text-decoration:underline}
+.clickable:hover{color:#fff}
+.status-text{font-size:12px;color:var(--yl);margin-bottom:10px;cursor:help}
+#fileDebug{font-size:10px;color:var(--tm);background:#000a03;border:1px dashed var(--bg2);padding:6px 8px;margin-top:6px;max-height:200px;overflow-y:auto;white-space:pre-wrap;line-height:1.35}
+#fileDebug .err{color:#ff6666}
+#fileDebug .ok{color:#88ffbb}
+#fileDebug .raw{color:#aaffdd;background:#001a0a;padding:4px 6px;border-left:2px solid var(--tg);margin:4px 0;white-space:pre-wrap}
+.tab-bar{display:flex;margin-bottom:10px;border:1px solid var(--bg2);border-radius:3px;overflow:hidden}
+.tab-bar button{flex:1;border-radius:0;border:none;margin:0;padding:8px 4px;font-size:10px;background:#010c04;color:var(--tm);border-right:1px solid var(--bg2)}
+.tab-bar button:last-child{border-right:none}
+.tab-bar button.active{background:var(--tg);color:#000;font-weight:bold}
+.tab-bar button:hover:not(.active){background:#002910;color:#fff}
+.hidden{display:none!important}
+.badge{font-size:10px;padding:2px 5px;border-radius:2px;font-weight:bold;white-space:nowrap;display:inline-block}
+.badge-yes{background:#003a1a;color:#00ff66;border:1px solid #00ff66}
+.badge-no{background:#1a1a1a;color:#888;border:1px solid #333}
+.badge-new{background:#2a1800;color:#ff8800;border:1px solid #ff8800;cursor:pointer}
+.badge-new:hover{background:#ff8800;color:#000}
+.collapse-header{background:var(--dg);border:1px solid var(--bg2);color:var(--tg);padding:8px 10px;cursor:pointer;font-size:11px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;margin-top:6px;border-radius:3px}
+.collapse-header:hover{background:#002910}
+.collapse-body{padding:10px 0 0}
+.collapse-arrow{transition:transform .2s;font-size:10px}
+.collapse-arrow.open{transform:rotate(90deg)}
+.metric-link{background:transparent;border:0;color:var(--yl);text-decoration:underline;padding:4px 0;text-align:left;margin:0;cursor:pointer;font-size:12px;text-transform:none;font-weight:normal;width:auto}
+.general-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.general-stat{background:var(--dg);border:1px solid var(--bg2);padding:6px 8px;border-radius:3px;text-align:center}
+.general-stat .k{color:var(--yl);font-size:9px;text-transform:uppercase}
+.general-stat .v{color:var(--br);font-size:13px;font-weight:bold;margin-top:2px}
+.pub-btn{font-size:8px;padding:1px 3px;margin-left:3px;background:transparent;border:1px solid var(--tg);color:var(--tg);border-radius:2px;cursor:pointer;vertical-align:middle;font-weight:bold;width:auto}
+.pub-btn:hover{background:var(--tg);color:#000}
+.by-badge{color:#666;font-size:9px;font-style:italic}
+.atk-inline{font-weight:bold;font-size:10px;margin-left:3px;display:inline-block}
+.atk-fast{color:#00ffff}.atk-ok{color:#00ff66}.atk-no{color:#ff3333}.atk-unk{color:#555}
+#modalOverlay{display:none;position:fixed;inset:0;background:rgba(1,5,2,.92);z-index:1000;justify-content:center;align-items:center;padding:8px}
+#modalOverlay.show{display:flex}
+#modalContent{background:#021206;border:1px solid var(--tg);padding:10px 12px;width:100%;max-width:520px;max-height:calc(100vh - 16px);display:flex;flex-direction:column;border-radius:4px;overflow:hidden}
+#modalHeader{display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:1px dashed var(--bg2);margin-bottom:8px;flex-shrink:0}
+#modalHeader .prompt{color:var(--tg);font-weight:bold;font-size:12px}
+#modalTitle{margin:0;color:var(--tg);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-weight:bold}
+#modalCloseX{width:26px;height:26px;padding:0;margin:0;background:transparent;border:1px solid var(--bg2);color:var(--tm);font-size:13px;border-radius:2px;flex-shrink:0;font-weight:normal}
+#modalCloseX:hover{background:var(--rd);color:#000;border-color:var(--rd)}
+#modalBody{font-size:12px;line-height:1.4;flex:1 1 auto;overflow-y:auto;min-height:0;padding-right:4px}
+.modal-actions{display:flex;gap:3px;margin-top:8px;padding-top:6px;border-top:1px dashed var(--bg2);flex-shrink:0;flex-wrap:wrap}
+.modal-actions button{flex:1 1 auto;min-width:0;padding:6px 4px;font-size:10px;background:transparent;border:1px solid var(--bg2);color:var(--tm);border-radius:2px;width:auto}
+.modal-actions button:hover{background:var(--tg);color:#000}
+.modal-actions button.act-primary{border-color:var(--tg);color:var(--tg)}
+.modal-actions button.act-primary:hover{background:var(--tg);color:#000}
+.modal-actions button.act-gold{border-color:var(--gd);color:var(--gd)}
+.modal-actions button.act-gold:hover{background:var(--gd);color:#000}
+.modal-actions button.act-danger{border-color:var(--rd);color:var(--rd)}
+.modal-actions button.act-danger:hover{background:var(--rd);color:#000}
+.term-section{margin-top:8px}
+.term-prompt{color:var(--tg);font-size:11px;font-weight:bold;display:block;margin-bottom:2px}
+.term-prompt::before{content:"> "}
+.term-body{padding-left:8px;font-size:12px;line-height:1.45}
+.kv{display:flex;font-size:12px;line-height:1.5}
+.kv .k{color:var(--yl);font-size:11px;width:60px;flex-shrink:0}
+.kv .v{color:var(--br);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kv .v.unknown{color:#555;font-style:italic}
+.kv .v .meta{color:#666;font-size:10px;margin-left:4px}
+.app-line{display:flex;font-size:11px;line-height:1.5;white-space:nowrap}
+.app-line .an{color:var(--tm)}
+.app-line .dots{flex:1;border-bottom:1px dotted rgba(0,136,51,.3);margin:0 6px;position:relative;top:-3px;min-width:6px}
+.app-line .av{color:var(--yl);font-weight:bold;min-width:26px;text-align:right}
+.app-line .av.unknown{color:#555;font-style:italic;font-weight:normal}
+.hour-bar{display:flex;gap:1px;margin-top:4px;height:20px;align-items:flex-end}
+.hour-bar span{flex:1;height:100%;background:var(--dg);border-top:2px solid var(--tg)}
+.hour-labels{font-size:9px;color:var(--tm);display:flex;justify-content:space-between;margin-top:1px}
+.note-area{width:100%;min-height:44px;background:#010a04;border:1px solid var(--bg2);color:var(--br);padding:6px;font-family:inherit;font-size:12px;margin-top:2px;border-radius:2px}
+.edit-input{padding:5px;font-size:12px;margin:2px 0;width:100%}
+.tgt-mark{cursor:pointer;font-size:12px;user-select:none;font-weight:bold;color:#333}
+.tgt-mark.on{color:var(--gd)}
+.tgt-mark:hover{color:#fff}
+.bdg{font-size:11px;margin-left:3px;display:inline-block;vertical-align:middle;font-weight:bold}
+.bdg-hot{color:#ff8800}
+.bdg-whale{color:#ff44cc}
+.bdg-up{color:#33ff88}
+.crew-badge{color:var(--pu);font-size:10px;margin-left:3px;font-weight:bold;cursor:pointer}
+.crew-badge:hover{color:#fff}
+.auth-gate{border:1px dashed var(--bg2);padding:18px 12px;text-align:center;color:var(--tm);margin-top:8px}
+.auth-gate strong{display:block;color:var(--tg);font-size:13px;margin-bottom:6px}
+.auth-gate button{max-width:260px;margin:8px auto 0}
+#authOverlay{display:none;position:fixed;inset:0;background:rgba(1,5,2,.94);z-index:1100;justify-content:center;align-items:center;padding:8px}
+#authOverlay.show{display:flex}
+#authBox{background:#021206;border:1px solid var(--tg);padding:14px;width:100%;max-width:380px;border-radius:4px}
+#authBox h2{margin-top:0}
+#authBox .auth-switch{display:flex;gap:6px;margin-bottom:10px}
+#authBox .auth-switch button{margin:0;padding:7px}
+#authBox .auth-switch button.active{background:var(--tg);color:#000}
+#authError{color:var(--rd);font-size:11px;min-height:16px;margin:4px 0}
+.api-config{font-size:11px;color:var(--tm);display:flex;gap:6px;align-items:center;margin-top:8px}
+.api-config input{flex:1;margin:0;padding:5px;font-size:11px}
+.api-config button{width:auto;margin:0;padding:5px 10px;font-size:10px}
+</style>
+<script>
+window.__diagLines=[];
+window.__diag=function(m){
+  var l='['+new Date().toLocaleTimeString()+'] '+m;
+  window.__diagLines.push(l);
+  var e=document.getElementById('diagBanner');
+  if(e){e.style.display='block';e.textContent=window.__diagLines.join('\n');}
+  console.error('[DIAG]',m);
+};
+window.onerror=function(m,u,l,c){window.__diag('JS ERROR: '+m+' @ '+l+':'+c);};
+window.addEventListener('unhandledrejection',function(e){
+  window.__diag('PROMISE REJECT: '+(e.reason&&e.reason.message?e.reason.message:e.reason));
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+
+<div id="diagBanner"></div>
+<canvas id="matrixCanvas"></canvas>
+
+<h1>&gt; Crypt0 Cr3w Central (CCC)
+  <select class="lang-toggle" id="langToggle" aria-label="Language">
+    <option value="en">EN</option>
+    <option value="es">ES</option>
+    <option value="ru">RU</option>
+    <option value="de">DE</option>
+  </select>
+</h1>
+<p style="color:var(--tg);font-size:12px;">&gt; [by m0lt0rn] — v3.0</p>
+
+<!-- ACCOUNT BAR -->
+<div class="account-bar empty" id="accountBar">
+  <span class="key" data-i18n="myAccount">MY ACCOUNT</span>
+  <span class="val" id="accountSummary">— not set —</span>
+  <span class="hint" id="accountStatus">CONNECT</span>
+  <button class="disconnect btn-small btn-danger" id="accountDisconnect" data-i18n="disconnect">DISCONNECT</button>
+</div>
+
+<!-- PANEL 1 -->
+<div class="panel">
+  <h2 data-i18n="p1">1. Logs Input</h2>
+  <div class="tab-bar">
+    <button id="logTabInput" class="active" data-log-tab="input" data-i18n="logInputTab">INPUT (my logs)</button>
+    <button id="logTabOutput" data-log-tab="output" data-i18n="logOutputTab">OUTPUT (victim logs)</button>
+  </div>
+  <div id="logPanelInput">
+    <textarea id="logInput" rows="5" placeholder="Paste your logs here ..."></textarea>
+    <button id="processLogsBtn" data-i18n="processLogs">PROCESS LOGS</button>
+  </div>
+  <div id="logPanelOutput" class="hidden">
+    <textarea id="outputLogInput" rows="5" placeholder="Paste victim logs here ..."></textarea>
+    <button id="processOutputBtn" data-i18n="processOutput">PROCESS OUTPUT</button>
+  </div>
+</div>
+
+<!-- PANEL 2 -->
+<div class="panel">
+  <h2 data-i18n="p2">2. Target Screenshot Scanner</h2>
+  <label for="cameraInput" class="file-upload-btn" data-i18n="uploadBtn">UPLOAD SCREENSHOT MAIN/APPS</label>
+  <input type="file" id="cameraInput" accept="image/*" multiple>
+  <label class="field-label" data-i18n="pasteHint">Or paste an image from clipboard:</label>
+  <div id="pasteZone" contenteditable="true" role="textbox" data-i18n="pasteZone">Tap here, then long-press → Paste</div>
+  <div id="ocrStatus" class="status-text">Status: Booting...</div>
+  <div id="fileDebug">[no events yet]</div>
+  <div class="collapse-header" id="manualHeader">
+    <span data-i18n="manualIntel">+ Manual Intel Entry (fallback)</span>
+    <span class="collapse-arrow" id="manualBlockArrow">▶</span>
+  </div>
+  <div class="collapse-body hidden" id="manualBlock">
+    <div class="grid-row">
+      <input type="text" id="ipInput" placeholder="IP *" autocomplete="off">
+      <input type="text" id="nameInput" placeholder="Name" autocomplete="off">
+    </div>
+    <div class="grid-row">
+      <input type="text" id="lvlInput" placeholder="Level" autocomplete="off">
+      <input type="text" id="repInput" placeholder="Rep" autocomplete="off">
+    </div>
+    <div class="grid-row">
+      <input type="text" id="fwInput" placeholder="FW" autocomplete="off">
+      <input type="text" id="encrInput" placeholder="ENCR" autocomplete="off">
+    </div>
+    <div class="grid-row">
+      <input type="text" id="scoreInput" placeholder="Score (optional)" autocomplete="off">
+      <input type="text" id="walletInput" placeholder="Wallet" autocomplete="off">
+    </div>
+    <button id="saveManualBtn" data-i18n="addUpdate">+ ADD / UPDATE</button>
+  </div>
+</div>
+
+<!-- PANEL 3 -->
+<div class="panel">
+  <h2 data-i18n="p3">3. Operational Metrics</h2>
+  <div class="loadout-bar">
+    <span class="lbl" data-i18n="loadout"># LOADOUT</span>
+    <div class="loadout-field"><span>BYPASSER</span><input type="number" min="0" id="myBypasser" inputmode="numeric"></div>
+    <div class="loadout-field"><span>PWD CRACKER</span><input type="number" min="0" id="myPasswordCracker" inputmode="numeric"></div>
+  </div>
+  <div class="grid-4">
+    <div><label data-i18n="avgHit">AVG/HIT:</label><input type="text" id="avgStolenMetric" value="0" readonly></div>
+    <div><label data-i18n="targets">TARGETS:</label><input type="text" id="targetsMetric" value="0" readonly></div>
+    <div><label data-i18n="totalStolen">TOTAL STOLEN:</label><input type="text" id="totalStolenMetric" value="0" readonly></div>
+    <div><label data-i18n="peakWindow">PEAK WINDOW:</label><input type="text" id="peakHourMetric" value="--:--" readonly style="color:var(--yl)"></div>
+  </div>
+  <div style="margin-top:10px">
+    <label data-i18n="operatorsOnline">OPERATORS ONLINE:</label>
+    <select id="operatorsOnlineMetric"><option>LOCAL</option></select>
+  </div>
+  <div style="margin-top:8px;border-top:1px solid var(--bg2);padding-top:6px">
+    <button class="metric-link" id="openOpListBtn" data-i18n="operationalList">OPERATIONAL LIST</button>
+  </div>
+</div>
+
+<!-- PANEL 4 -->
+<div class="panel">
+  <h2 data-i18n="p4">4. Intelligence Database</h2>
+  <div class="tab-bar">
+    <button id="dbTabInternal" class="active" data-db-tab="internal" data-i18n="tabInternal">INTERNAL</button>
+    <button id="dbTabGeneral" data-db-tab="general" data-i18n="tabGeneral">GENERAL</button>
+    <button id="dbTabExternal" data-db-tab="external" data-i18n="tabExternal">EXTERNAL</button>
+  </div>
+
+  <!-- INTERNAL -->
+  <div id="dbPanelInternal">
+    <div class="personal-note" style="font-size:10px;color:var(--yl);opacity:.85;margin-bottom:6px" data-i18n="internalPrivate">INTERNAL DATABASE REMAINS PRIVATE</div>
+    <div id="authGate" class="auth-gate hidden">
+      <strong data-i18n="internalLocked">INTERNAL DATABASE LOCKED</strong>
+      <span data-i18n="internalLockedMsg">Register or log in to access your private records.</span>
+      <button id="openAuthBtn" data-i18n="openAccount">OPEN MY ACCOUNT</button>
+    </div>
+    <div id="internalContent">
+      <input type="text" id="searchInput" placeholder="Search IP, account, wallet, app..." autocomplete="off">
+      <button class="btn-small" id="publishAllBtn" data-i18n="publishAll">EXPORT ALL → GENERAL</button>
+      <div style="overflow-x:auto"><table class="intel" id="intelTable">
+        <colgroup>
+          <col style="width:26px"><col style="width:80px"><col><col style="width:24px">
+          <col style="width:24px"><col style="width:26px"><col style="width:40px">
+          <col style="width:40px"><col style="width:24px"><col style="width:38px">
+          <col style="width:46px"><col style="width:48px">
+        </colgroup>
+        <thead><tr>
+          <th class="ctr">@</th>
+          <th class="sortable" data-sort="ip">IP</th>
+          <th class="sortable" data-sort="name">Name</th>
+          <th class="sortable" data-sort="lvl">Lv</th>
+          <th class="sortable" data-sort="fw">FW</th>
+          <th class="sortable" data-sort="encr">EN</th>
+          <th class="sortable" data-sort="rep">Rep</th>
+          <th class="sortable" data-sort="stolen">Stolen</th>
+          <th class="sortable" data-sort="hits">Hit</th>
+          <th class="sortable" data-sort="avg">Avg</th>
+          <th class="sortable" data-sort="revh">Cr/h</th>
+          <th class="sortable" data-sort="peak">Peak</th>
+        </tr></thead>
+        <tbody id="tableBody"></tbody>
+      </table></div>
+      <div class="row-end">
+        <button class="btn-small btn-danger" id="clearInternalBtn" data-i18n="purgeInternal">PURGE INTERNAL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERAL -->
+  <div id="dbPanelGeneral" class="hidden">
+    <div class="crew-line">
+      <span class="lbl" data-i18n="crewServer">CREW SERVER</span>
+      <span class="crew-status" id="crewConnectionStatus"></span>
+      <input type="text" id="crewIdentification" placeholder="Crew ID" autocomplete="username">
+      <input type="password" id="crewPassword" placeholder="Crew pass" autocomplete="current-password">
+      <button class="btn-small btn-purple" id="crewLoginBtn" data-i18n="login">LOGIN</button>
+      <button class="btn-small btn-purple" id="crewCreateBtn" data-i18n="createCrew">CREATE</button>
+    </div>
+    <div class="api-config">
+      <span>API</span>
+      <input type="text" id="apiBaseInput" placeholder="https://your-server.com (empty = offline)" autocomplete="off">
+      <button class="btn-small" id="apiSaveBtn">SET</button>
+    </div>
+    <input type="text" id="genSearchInput" placeholder="Search IP, account, wallet, app..." autocomplete="off">
+    <div style="overflow-x:auto"><table class="intel" id="generalTable">
+      <colgroup>
+        <col style="width:26px"><col style="width:80px"><col><col style="width:24px">
+        <col style="width:24px"><col style="width:26px"><col style="width:40px">
+        <col style="width:40px"><col style="width:24px"><col style="width:38px">
+        <col style="width:46px"><col style="width:48px">
+      </colgroup>
+      <thead><tr>
+        <th class="ctr">@</th>
+        <th class="sortable" data-gen-sort="ip">IP</th>
+        <th class="sortable" data-gen-sort="name">Name</th>
+        <th class="sortable" data-gen-sort="lvl">Lv</th>
+        <th class="sortable" data-gen-sort="fw">FW</th>
+        <th class="sortable" data-gen-sort="encr">EN</th>
+        <th class="sortable" data-gen-sort="rep">Rep</th>
+        <th class="sortable" data-gen-sort="stolen">Stolen</th>
+        <th class="sortable" data-gen-sort="hits">Hit</th>
+        <th class="sortable" data-gen-sort="avg">Avg</th>
+        <th class="sortable" data-gen-sort="revh">Cr/h</th>
+        <th class="sortable" data-gen-sort="peak">Peak</th>
+      </tr></thead>
+      <tbody id="generalTableBody"></tbody>
+    </table></div>
+    <div class="row-end">
+      <button class="btn-small" id="importGeneralBtn" data-i18n="import">IMPORT</button>
+      <button class="btn-small btn-danger" id="adminPurgeBtn" data-i18n="purgeGeneral">PURGE GENERAL [ADMIN]</button>
+    </div>
+  </div>
+
+  <!-- EXTERNAL -->
+  <div id="dbPanelExternal" class="hidden">
+    <div style="font-size:10px;color:var(--yl);margin:4px 0 6px" data-i18n="externalInfo">
+      EXTERNAL remains local. Wallet matches flagged as NEW IP FOUND against GENERAL.
+    </div>
+    <input type="text" id="extSearchInput" placeholder="Search IP or wallet..." autocomplete="off">
+    <div class="external-actions">
+      <button class="btn-small" id="extToInternalBtn" data-i18n="exportToInternal">EXPORT TO INTERNAL</button>
+      <button class="btn-small" id="extToGeneralBtn" data-i18n="exportToGeneral">EXPORT TO GENERAL</button>
+    </div>
+    <div style="overflow-x:auto"><table class="intel" id="externalTable">
+      <colgroup>
+        <col style="width:90px"><col style="width:90px"><col style="width:80px">
+        <col style="width:60px"><col style="width:60px"><col style="width:50px"><col style="width:90px">
+      </colgroup>
+      <thead><tr>
+        <th class="sortable" data-ext-sort="ip">IP</th>
+        <th class="sortable" data-ext-sort="wallet">Wallet</th>
+        <th>Account</th>
+        <th class="sortable" data-ext-sort="stolenFrom">Robbed</th>
+        <th class="sortable" data-ext-sort="theyStole">Stole</th>
+        <th class="sortable" data-ext-sort="avgHour">Avg h</th>
+        <th class="sortable" data-ext-sort="accessed">Accessed</th>
+      </tr></thead>
+      <tbody id="externalTableBody"></tbody>
+    </table></div>
+    <div class="row-end">
+      <button class="btn-small btn-danger" id="clearExternalBtn" data-i18n="purgeExternal">PURGE EXTERNAL</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH OVERLAY -->
+<div id="authOverlay">
+  <div id="authBox">
+    <h2 id="authTitle" data-i18n="myAccount">MY ACCOUNT</h2>
+    <div class="auth-switch">
+      <button id="authLoginTab" class="active" data-auth-mode="login" data-i18n="login">LOGIN</button>
+      <button id="authRegisterTab" data-auth-mode="register" data-i18n="register">REGISTER</button>
+    </div>
+    <label class="field-label" for="authUsername" data-i18n="username">USERNAME</label>
+    <input type="text" id="authUsername" autocomplete="username" maxlength="32">
+    <label class="field-label" for="authPassword" data-i18n="password">PASSWORD</label>
+    <input type="password" id="authPassword" autocomplete="current-password" minlength="8">
+    <div id="authConfirmWrap" class="hidden">
+      <label class="field-label" for="authPasswordConfirm" data-i18n="confirmPassword">CONFIRM PASSWORD</label>
+      <input type="password" id="authPasswordConfirm" autocomplete="new-password" minlength="8">
+    </div>
+    <div id="authError"></div>
+    <button id="authSubmit" data-i18n="login">LOGIN</button>
+    <button class="btn-small" id="authCancelBtn" data-i18n="cancel">CANCEL</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modalOverlay">
+  <div id="modalContent">
+    <div id="modalHeader">
+      <span class="prompt">&gt;</span>
+      <h2 id="modalTitle">target</h2>
+      <button id="modalCloseX" title="Close">x</button>
+    </div>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* CCC v3.0 — Crypt0 Cr3w Central
+   Backend contract (when ready):
+     POST   /api/auth/register  {username,password}
+     POST   /api/auth/login     {username,password}
+     POST   /api/auth/logout
+     GET    /api/general
+     POST   /api/general/publish {records}
+     DELETE /api/general        {adminPassword}
+     GET    /api/operators
+   apiBase auto-detects current origin when served over http(s). */
+
+const CONFIG = {
+  apiBase: (typeof window !== 'undefined' && window.location.protocol.startsWith('http'))
+    ? window.location.origin
+    : '',
+  pbkdf2Iterations: 150000,
+  sessionTTLms: 7 * 24 * 3600 * 1000,
+  version: '3.0',
+};
+
+const $ = (sel, root) => (root || document).querySelector(sel);
+const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function formatNum(n){
+  if(n==null||n==='')return'';n=Number(n);if(isNaN(n))return'';
+  if(n===0)return'0';const a=Math.abs(n);
+  if(a<1000)return String(Math.round(n));
+  if(a<10000)return n.toLocaleString();
+  if(a<1e6)return(n/1e3).toFixed(1).replace(/\.0$/,'')+'k';
+  if(a<1e9)return(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M';
+  return(n/1e9).toFixed(2).replace(/\.?0+$/,'')+'B';
+}
+function formatRate(n){
+  if(!n||n<=0)return'—';
+  if(n>=1e9)return(n/1e9).toFixed(2).replace(/\.?0+$/,'')+'B/h';
+  if(n>=1e6)return(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M/h';
+  if(n>=1e3)return(n/1e3).toFixed(1).replace(/\.0$/,'')+'k/h';
+  return Math.round(n)+'/h';
+}
+function formatFull(n){if(n==null||n==='')return'—';n=Number(n);if(isNaN(n))return'—';return n.toLocaleString();}
+function cleanNumeric(s){if(s==null)return'';const m=String(s).match(/(\d{1,6})/);return m?m[1]:String(s).trim();}
+function cleanBigNumber(s){if(s==null)return'';return String(s).replace(/[^\d]/g,'');}
+function dedupeKey(parts){
+  const s=parts.join('|');let h=0x811c9dc5;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=(h*0x01000193)>>>0;}
+  return 'k'+h.toString(36);
+}
+function extractHour(t){if(!t)return null;const m=String(t).match(/(\d{1,2}):(\d{2})/);if(!m)return null;const h=parseInt(m[1],10);return(h>=0&&h<=23)?h:null;}
+function formatPeak(h){const p=n=>String(n).padStart(2,'0');return p(h)+'-'+p((h+1)%24);}
+function parseGameTime(s){
+  if(!s)return null;
+  const m=String(s).match(/(\d{1,2})-(\d{1,2})\s+(\d{1,2}):(\d{2})/);
+  if(!m)return null;
+  const y=new Date().getFullYear();
+  const d=new Date(y,parseInt(m[1],10)-1,parseInt(m[2],10),parseInt(m[3],10),parseInt(m[4],10));
+  if(d.getTime()>Date.now()+86400000)d.setFullYear(y-1);
+  return d;
+}
+function hoursAgo(d){if(!d)return null;return(Date.now()-d.getTime())/3600000;}
+
+const State = {
+  currentUser:null, session:null,
+  settings:{lang:'en',sortColumn:'avg',sortDirection:'desc',genSortColumn:'avg',genSortDirection:'desc',extSortColumn:'theyStole',extSortDirection:'desc',dbTab:'internal',logTab:'input'},
+  myAccount:{name:'',ip:'',level:'',rep:'',apps:{},lastUpdated:''},
+  database:{}, general:{}, external:{},
+  crewOnline:false, crewOperators:[],
+  ocr:{worker:null,broken:false,lastText:''},
+  busy:false, modal:{ip:null,edit:false},
+};
+
+const Store = {
+  _key(k){return'ccc_'+k;},
+  load(k,fb){try{const raw=localStorage.getItem(this._key(k));return raw==null?fb:JSON.parse(raw);}catch(e){return fb;}},
+  save(k,v){try{localStorage.setItem(this._key(k),JSON.stringify(v));return true;}catch(e){console.error('store.save',k,e);return false;}},
+  remove(k){try{localStorage.removeItem(this._key(k));}catch(e){}},
+};
+function userDbKey(){return State.currentUser?'internal_'+State.currentUser.username:null;}
+function loadInternal(){const k=userDbKey();State.database=k?(Store.load(k,{})||{}):{};}
+function saveInternal(){const k=userDbKey();if(!k)return false;return Store.save(k,State.database);}
+
+const Auth = {
+  _b64(buf){return btoa(String.fromCharCode.apply(null,new Uint8Array(buf))).replace(/=+$/,'');},
+  _rand(bytes){const b=new Uint8Array(bytes);crypto.getRandomValues(b);return this._b64(b);},
+  async _hash(password,saltB64,iterations){
+    const enc=new TextEncoder();
+    const salt=Uint8Array.from(atob(saltB64),c=>c.charCodeAt(0));
+    const key=await crypto.subtle.importKey('raw',enc.encode(password),{name:'PBKDF2'},false,['deriveBits']);
+    const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:iterations||CONFIG.pbkdf2Iterations,hash:'SHA-256'},key,256);
+    return this._b64(bits);
+  },
+  async register(username,password){
+    const users=Store.load('users',{});
+    if(users[username])throw new Error('That username already exists.');
+    const salt=this._rand(16);
+    const hash=await this._hash(password,salt);
+    users[username]={salt,hash,iterations:CONFIG.pbkdf2Iterations,createdAt:new Date().toISOString()};
+    if(!Store.save('users',users))throw new Error('Storage full — cannot save account.');
+    return{username};
+  },
+  async login(username,password){
+    const users=Store.load('users',{});
+    const u=users[username];
+    if(!u)throw new Error('Unknown username or password.');
+    const check=await this._hash(password,u.salt,u.iterations);
+    if(check!==u.hash)throw new Error('Unknown username or password.');
+    return{username};
+  },
+  startSession(username){
+    const token=this._rand(24);
+    const session={username,token,expires:Date.now()+CONFIG.sessionTTLms};
+    State.session=session;Store.save('session',session);
+  },
+  loadSession(){
+    const s=Store.load('session',null);
+    if(!s||!s.username||!s.expires)return null;
+    if(Date.now()>s.expires){Store.remove('session');return null;}
+    const users=Store.load('users',{});
+    if(!users[s.username]){Store.remove('session');return null;}
+    State.session=s;return s;
+  },
+  logout(){State.session=null;State.currentUser=null;Store.remove('session');},
+};
+
+const Api = {
+  _url(path){return(CONFIG.apiBase||'').replace(/\/$/,'')+path;},
+  async _fetch(path,opts){
+    if(!CONFIG.apiBase)throw new Error('API_BASE not configured');
+    const r=await fetch(this._url(path),Object.assign({credentials:'include',headers:{'Content-Type':'application/json'}},opts||{}));
+    if(!r.ok){let msg='HTTP '+r.status;try{const j=await r.json();msg=j.error||msg;}catch(e){}throw new Error(msg);}
+    return r.json();
+  },
+  async login(id,pw){return this._fetch('/api/auth/login',{method:'POST',body:JSON.stringify({username:id,password:pw})});},
+  async register(id,pw){return this._fetch('/api/auth/register',{method:'POST',body:JSON.stringify({username:id,password:pw})});},
+  async logout(){return this._fetch('/api/auth/logout',{method:'POST'});},
+  async getGeneral(){return this._fetch('/api/general');},
+  async publishGeneral(records){return this._fetch('/api/general/publish',{method:'POST',body:JSON.stringify({records})});},
+  async adminPurge(adminPassword){return this._fetch('/api/general',{method:'DELETE',body:JSON.stringify({adminPassword})});},
+  async getOperators(){return this._fetch('/api/operators');},
+  get online(){return!!CONFIG.apiBase;},
+};
+
+const I18N = {
+  en:{myAccount:'MY ACCOUNT',disconnect:'DISCONNECT',connect:'CONNECT',connected:'CONNECTED',notSet:'— not set —',
+    p1:'1. Logs Input',logInputTab:'INPUT (my logs)',logOutputTab:'OUTPUT (victim logs)',processLogs:'PROCESS LOGS',processOutput:'PROCESS OUTPUT',
+    p2:'2. Target Screenshot Scanner',uploadBtn:'UPLOAD SCREENSHOT MAIN/APPS',pasteHint:'Or paste an image from clipboard:',pasteZone:'Tap here, then long-press → Paste',
+    manualIntel:'+ Manual Intel Entry (fallback)',addUpdate:'+ ADD / UPDATE',
+    p3:'3. Operational Metrics',loadout:'# LOADOUT',avgHit:'AVG/HIT:',targets:'TARGETS:',totalStolen:'TOTAL STOLEN:',peakWindow:'PEAK WINDOW:',
+    operatorsOnline:'OPERATORS ONLINE:',operationalList:'OPERATIONAL LIST',
+    p4:'4. Intelligence Database',tabInternal:'INTERNAL',tabGeneral:'GENERAL',tabExternal:'EXTERNAL',
+    internalPrivate:'INTERNAL DATABASE REMAINS PRIVATE',internalLocked:'INTERNAL DATABASE LOCKED',internalLockedMsg:'Register or log in to access your private records.',openAccount:'OPEN MY ACCOUNT',
+    publishAll:'EXPORT ALL → GENERAL',share:'SHARE GENERAL',import:'IMPORT',
+    purgeInternal:'PURGE INTERNAL',purgeGeneral:'PURGE GENERAL [ADMIN]',purgeExternal:'PURGE EXTERNAL',
+    exportToInternal:'EXPORT TO INTERNAL',exportToGeneral:'EXPORT TO GENERAL',
+    crewServer:'CREW SERVER',login:'LOGIN',register:'REGISTER',createCrew:'CREATE',
+    username:'USERNAME',password:'PASSWORD',confirmPassword:'CONFIRM PASSWORD',cancel:'CANCEL',
+    externalInfo:'EXTERNAL remains local. Wallet matches flagged as NEW IP FOUND against GENERAL.'},
+  es:{myAccount:'MI CUENTA',disconnect:'DESCONECTAR',connect:'CONECTAR',connected:'CONECTADO',notSet:'— no configurada —',
+    p1:'1. Entrada de registros',logInputTab:'ENTRADA (mis registros)',logOutputTab:'SALIDA (registros víctimas)',processLogs:'PROCESAR REGISTROS',processOutput:'PROCESAR SALIDA',
+    p2:'2. Escáner de capturas',uploadBtn:'SUBIR CAPTURA MAIN/APPS',pasteHint:'O pega una imagen del portapapeles:',pasteZone:'Toca aquí y mantén pulsado → Pegar',
+    manualIntel:'+ Entrada manual (respaldo)',addUpdate:'+ AÑADIR / ACTUALIZAR',
+    p3:'3. Métricas operativas',loadout:'# EQUIPAMIENTO',avgHit:'MEDIA/GOLPE:',targets:'OBJETIVOS:',totalStolen:'TOTAL ROBADO:',peakWindow:'PICO:',
+    operatorsOnline:'OPERADORES ONLINE:',operationalList:'LISTA OPERATIVA',
+    p4:'4. Base de inteligencia',tabInternal:'INTERNA',tabGeneral:'GENERAL',tabExternal:'EXTERNA',
+    internalPrivate:'LA BASE INTERNA ES PRIVADA',internalLocked:'BASE INTERNA BLOQUEADA',internalLockedMsg:'Regístrate o inicia sesión para acceder a tus registros privados.',openAccount:'ABRIR MI CUENTA',
+    publishAll:'EXPORTAR TODO → GENERAL',share:'COMPARTIR GENERAL',import:'IMPORTAR',
+    purgeInternal:'PURGAR INTERNA',purgeGeneral:'PURGAR GENERAL [ADMIN]',purgeExternal:'PURGAR EXTERNA',
+    exportToInternal:'EXPORTAR A INTERNA',exportToGeneral:'EXPORTAR A GENERAL',
+    crewServer:'SERVIDOR CREW',login:'ENTRAR',register:'REGISTRARSE',createCrew:'CREAR',
+    username:'USUARIO',password:'CONTRASEÑA',confirmPassword:'CONFIRMAR CONTRASEÑA',cancel:'CANCELAR',
+    externalInfo:'EXTERNAL es local. Coincidencias de wallet marcadas como NEW IP FOUND contra GENERAL.'},
+  ru:{myAccount:'МОЙ АККАУНТ',disconnect:'ВЫЙТИ',connect:'ВОЙТИ',connected:'ПОДКЛЮЧЕНО',notSet:'— не задано —',
+    p1:'1. Ввод журналов',logInputTab:'ВВОД (мои)',logOutputTab:'ВЫВОД (жертвы)',processLogs:'ОБРАБОТАТЬ',processOutput:'ОБРАБОТАТЬ',
+    p2:'2. Сканер снимков',uploadBtn:'ЗАГРУЗИТЬ MAIN/APPS',pasteHint:'Или вставьте изображение:',pasteZone:'Нажмите и удерживайте → Вставить',
+    manualIntel:'+ Ручной ввод',addUpdate:'+ ДОБАВИТЬ / ОБНОВИТЬ',
+    p3:'3. Показатели',loadout:'# СНАРЯЖЕНИЕ',avgHit:'СРЕДНЕЕ:',targets:'ЦЕЛИ:',totalStolen:'УКРАДЕНО:',peakWindow:'ПИК:',
+    operatorsOnline:'ОПЕРАТОРЫ:',operationalList:'СПИСОК',
+    p4:'4. База данных',tabInternal:'ВНУТР.',tabGeneral:'ОБЩАЯ',tabExternal:'ВНЕШН.',
+    internalPrivate:'ВНУТРЕННЯЯ БАЗА ПРИВАТНА',internalLocked:'ВНУТРЕННЯЯ БАЗА ЗАБЛОКИРОВАНА',internalLockedMsg:'Войдите, чтобы получить доступ.',openAccount:'ОТКРЫТЬ АККАУНТ',
+    publishAll:'ЭКСПОРТ → ОБЩАЯ',share:'ПОДЕЛИТЬСЯ',import:'ИМПОРТ',
+    purgeInternal:'ОЧИСТИТЬ ВНУТР.',purgeGeneral:'ОЧИСТИТЬ ОБЩУЮ [ADMIN]',purgeExternal:'ОЧИСТИТЬ ВНЕШН.',
+    exportToInternal:'В ВНУТРЕННЮЮ',exportToGeneral:'В ОБЩУЮ',
+    crewServer:'СЕРВЕР CREW',login:'ВОЙТИ',register:'РЕГИСТРАЦИЯ',createCrew:'СОЗДАТЬ',
+    username:'ИМЯ',password:'ПАРОЛЬ',confirmPassword:'ПОДТВЕРДИТЕ',cancel:'ОТМЕНА',
+    externalInfo:'EXTERNAL — локально. Совпадения с GENERAL → NEW IP FOUND.'},
+  de:{myAccount:'MEIN KONTO',disconnect:'ABMELDEN',connect:'VERBINDEN',connected:'VERBUNDEN',notSet:'— nicht gesetzt —',
+    p1:'1. Log-Eingabe',logInputTab:'EINGABE (meine)',logOutputTab:'AUSGABE (Opfer)',processLogs:'VERARBEITEN',processOutput:'VERARBEITEN',
+    p2:'2. Screenshot-Scanner',uploadBtn:'MAIN/APPS HOCHLADEN',pasteHint:'Oder Bild einfügen:',pasteZone:'Tippen, halten → Einfügen',
+    manualIntel:'+ Manuelle Eingabe',addUpdate:'+ HINZUFÜGEN / UPDATE',
+    p3:'3. Betriebsmetriken',loadout:'# AUSRÜSTUNG',avgHit:'MITTEL:',targets:'ZIELE:',totalStolen:'GESTOHLEN:',peakWindow:'SPITZE:',
+    operatorsOnline:'OPERATOREN:',operationalList:'LISTE',
+    p4:'4. Datenbank',tabInternal:'INTERN',tabGeneral:'ALLGEMEIN',tabExternal:'EXTERN',
+    internalPrivate:'INTERNE DB BLEIBT PRIVAT',internalLocked:'INTERNE DB GESPERRT',internalLockedMsg:'Registrieren oder anmelden.',openAccount:'KONTO ÖFFNEN',
+    publishAll:'ALLE → ALLGEMEIN',share:'TEILEN',import:'IMPORT',
+    purgeInternal:'INTERN LÖSCHEN',purgeGeneral:'ALLGEMEIN LÖSCHEN [ADMIN]',purgeExternal:'EXTERN LÖSCHEN',
+    exportToInternal:'NACH INTERN',exportToGeneral:'NACH ALLGEMEIN',
+    crewServer:'CREW-SERVER',login:'LOGIN',register:'REGISTRIEREN',createCrew:'ERSTELLEN',
+    username:'BENUTZER',password:'PASSWORT',confirmPassword:'BESTÄTIGEN',cancel:'ABBRECHEN',
+    externalInfo:'EXTERN bleibt lokal. Wallet-Treffer gegen ALLGEMEIN → NEW IP FOUND.'},
+};
+function t(key){const lang=State.settings.lang||'en';const dict=I18N[lang]||I18N.en;return dict[key]||I18N.en[key]||key;}
+function applyLanguage(){
+  const lang=State.settings.lang||'en';
+  document.documentElement.lang=lang;
+  const sel=$('#langToggle');if(sel)sel.value=lang;
+  $$('[data-i18n]').forEach(el=>{const key=el.getAttribute('data-i18n');const val=I18N[lang]&&I18N[lang][key];if(val!=null)el.textContent=val;});
+}
+
+/* Matrix background */
+(function matrix(){
+  const canvas=$('#matrixCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const chars="0123456789ABCDEFHIJKLMNOPQRSTUVWXYZ<>[]+-*/#$@%&";
+  const fontSize=14;let drops=[];
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;const cols=Math.floor(canvas.width/fontSize);drops=new Array(cols).fill(1);}
+  window.addEventListener('resize',resize);resize();
+  setInterval(()=>{
+    ctx.fillStyle='rgba(3,8,5,.08)';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#00ff66';ctx.font=fontSize+'px monospace';
+    for(let i=0;i<drops.length;i++){
+      const c=chars.charAt(Math.floor(Math.random()*chars.length));
+      ctx.fillText(c,i*fontSize,drops[i]*fontSize);
+      if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;
+      drops[i]++;
+    }
+  },40);
+})();
+
+/* Records */
+function emptyRecord(ip){
+  return {ip:ip||'',name:'',lvl:'',score:'',fw:'',encr:'',rep:'',wallet:'',
+    totalStolen:0,hits:0,peakHour:'--:--',logHistory:[],apps:{},rawOcr:'',notes:'',
+    tgt:false,attackHistory:[],fwPrev:'',encrPrev:'',fwUpAt:null,encrUpAt:null,lvlUpAt:null,
+    _contributor:'',_publishedAt:''};
+}
+function recordLastHit(r){if(!r.logHistory||!r.logHistory.length)return null;let last=null;for(const h of r.logHistory){const d=parseGameTime(h.time);if(d&&(!last||d>last))last=d;}return last;}
+function recordFirstHit(r){if(!r.logHistory||!r.logHistory.length)return null;let first=null;for(const h of r.logHistory){const d=parseGameTime(h.time);if(d&&(!first||d<first))first=d;}return first;}
+function revenuePerHour(r){
+  const total=Number(r.totalStolen)||0;if(!total)return 0;
+  const first=recordFirstHit(r),last=recordLastHit(r);
+  if(first&&last){const span=(last.getTime()-first.getTime())/3600000;if(span>=1)return Math.round(total/span);}
+  if(first){const active=(Date.now()-first.getTime())/3600000;if(active>=1)return Math.round(total/active);}
+  return total;
+}
+function isHotWallet(r){if(!r.wallet||r.wallet==='-')return false;let c=0;for(const k in State.database)if(State.database[k].wallet===r.wallet)c++;return c>=2;}
+function isRecentWhale(r){
+  const minAvg=1000,maxHours=48;
+  if(!r.hits||!r.totalStolen)return false;
+  if(r.totalStolen/r.hits<minAvg)return false;
+  const last=recordLastHit(r);if(!last)return false;
+  return hoursAgo(last)<=maxHours;
+}
+function attackStatus(r){
+  const mB=parseInt(State.myAccount.apps['Bypasser'],10);
+  const mP=parseInt(State.myAccount.apps['Password Cracker'],10);
+  const tF=parseInt(r.fw,10),tE=parseInt(r.encr,10);
+  if(isNaN(mB)||isNaN(mP)||isNaN(tF)||isNaN(tE))return'unk';
+  if(mB<tF||mP<tE)return'no';
+  const m=Math.min(mB-tF,mP-tE);
+  return m>=5?'fast':'ok';
+}
+function attackInlineHtml(s){
+  if(s==='fast')return'<span class="atk-inline atk-fast" title="fast attack">++</span>';
+  if(s==='ok')return'<span class="atk-inline atk-ok" title="attackable">+</span>';
+  if(s==='no')return'<span class="atk-inline atk-no" title="blocked">-</span>';
+  return'<span class="atk-inline atk-unk" title="set loadout">?</span>';
+}
+function detectUpgrades(r,nF,nE,nL){
+  let upgraded=false;const now=Date.now();
+  if(nF!=null&&nF!==''){const p=parseInt(r.fw,10),x=parseInt(nF,10);if(!isNaN(p)&&!isNaN(x)&&x>p){r.fwPrev=String(p);r.fwUpAt=now;upgraded=true;}}
+  if(nE!=null&&nE!==''){const p=parseInt(r.encr,10),x=parseInt(nE,10);if(!isNaN(p)&&!isNaN(x)&&x>p){r.encrPrev=String(p);r.encrUpAt=now;upgraded=true;}}
+  if(nL!=null&&nL!==''){const p=parseInt(r.lvl,10),x=parseInt(nL,10);if(!isNaN(p)&&!isNaN(x)&&x>p){r.lvlUpAt=now;upgraded=true;}}
+  return upgraded;
+}
+function recentlyUpgraded(r){
+  const maxDays=14,maxMs=maxDays*86400000,now=Date.now();
+  if(r.fwUpAt&&(now-r.fwUpAt)<maxMs)return'fw';
+  if(r.encrUpAt&&(now-r.encrUpAt)<maxMs)return'encr';
+  if(r.lvlUpAt&&(now-r.lvlUpAt)<maxMs)return'lvl';
+  return null;
+}
+function calculatePeakHour(logHistory){
+  if(!logHistory||!logHistory.length)return'--:--';
+  const m={};
+  for(const h of logHistory){const hr=extractHour(h.time);if(hr===null)continue;m[hr]=(m[hr]||0)+h.amount;}
+  let best='--:--',mx=0;
+  for(const k in m)if(m[k]>mx){mx=m[k];best=formatPeak(parseInt(k,10));}
+  return best;
+}
+function globalPeakHour(){
+  const m={};
+  for(const ip in State.database){
+    for(const h of(State.database[ip].logHistory||[])){
+      const hr=extractHour(h.time);if(hr===null)continue;
+      m[hr]=(m[hr]||0)+h.amount;
+    }
+  }
+  let best='--:--',mx=0;
+  for(const k in m)if(m[k]>mx){mx=m[k];best=formatPeak(parseInt(k,10));}
+  return best;
+}
+
+/* Log parsers */
+const RE_ACCESS=/\[?(.*?)\]?\s*Accessed\s*device\s*at\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/i;
+const RE_STOLE_IN=/\[?(.*?)\]?\s*Stole\s*([\d.,]+)\s*Crypto\s*from\s*([a-zA-Z0-9._\-]+)/i;
+
+function processInputLogs(){
+  if(!requireAuth())return;
+  const text=$('#logInput').value;
+  if(!text.trim()){alert('Please paste some logs first!');return;}
+  const lines=text.split('\n');
+  let newIps=0;
+  for(let i=lines.length-1;i>=0;i--){
+    const line=lines[i].trim();
+    const am=line.match(RE_ACCESS);
+    if(!am)continue;
+    const lt=am[1].trim(),ip=am[2].trim();
+    let amount=0,wallet='';
+    for(let j=i-1;j>=0;j--){
+      const pl=lines[j].trim();
+      if(/Accessed\s*device\s*at/i.test(pl))break;
+      const sm=pl.match(RE_STOLE_IN);
+      if(sm){amount=parseInt(sm[2].replace(/[.,]/g,''),10)||0;wallet=sm[3].trim();break;}
+    }
+    if(!State.database[ip]){State.database[ip]=emptyRecord(ip);newIps++;}
+    const r=State.database[ip];
+    const dk=dedupeKey([lt,ip,amount,wallet]);
+    if(r.logHistory.some(h=>h.dedupeKey===dk))continue;
+    if(amount>0){r.totalStolen+=amount;r.hits+=1;}
+    if(wallet)r.wallet=wallet;
+    r.logHistory.push({time:lt,amount,wallet,dedupeKey:dk});
+    r.peakHour=calculatePeakHour(r.logHistory);
+  }
+  saveInternal();$('#logInput').value='';renderAll();
+  alert('Indexed. New IPs: '+newIps);
+}
+
+function processOutputLogs(){
+  const text=$('#outputLogInput').value;
+  if(!text.trim()){alert('Please paste victim logs first!');return;}
+  const lines=text.split('\n');
+  let added=0,updated=0;
+  for(const raw of lines){
+    const line=raw.trim();if(!line)continue;
+    let time=null,ip=null,amount=0,wallet=null,direction='they';
+    let m=line.match(/\[(.*?)\]\s*(?:IP\s*)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s+stole\s+([\d.,]+)\s+(?:Crypto\s+)?from\s+(?:wallet\s+)?([a-zA-Z0-9_\-\.]+)/i);
+    if(m){time=m[1];ip=m[2];amount=parseInt(m[3].replace(/[.,]/g,''),10)||0;wallet=m[4];}
+    if(!ip){
+      m=line.match(/\[(.*?)\]\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*(?:->|:)\s*(?:wallet\s+)?([a-zA-Z0-9_\-\.]+)\s*:?\s*([\d.,]+)/i);
+      if(m){time=m[1];ip=m[2];wallet=m[3];amount=parseInt(m[4].replace(/[.,]/g,''),10)||0;}
+    }
+    if(!ip){
+      m=line.match(/\[(.*?)\]\s*stole\s+([\d.,]+)\s+(?:Crypto\s+)?from\s+(?:wallet\s+)?([a-zA-Z0-9_\-\.]+)\s+at\s+(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/i);
+      if(m){time=m[1];amount=parseInt(m[2].replace(/[.,]/g,''),10)||0;wallet=m[3];ip=m[4];}
+    }
+    if(ip&&/was\s+(?:robbed|stolen)/i.test(line))direction='them';
+    if(!ip||!wallet)continue;
+    const hr=extractHour(time);
+    if(!State.external[ip]){
+      State.external[ip]={ip,wallet,stolenFromThem:0,theyStole:0,hours:[],accessed:'unknown',altWallets:[]};
+      added++;
+    }else{
+      updated++;
+      if(State.external[ip].wallet&&State.external[ip].wallet!==wallet){
+        if(State.external[ip].altWallets.indexOf(wallet)<0)State.external[ip].altWallets.push(wallet);
+      }
+    }
+    const rec=State.external[ip];
+    if(direction==='them')rec.stolenFromThem+=amount;else rec.theyStole+=amount;
+    if(hr!==null)rec.hours.push(hr);
+  }
+  Store.save('external',State.external);
+  crossReferenceExternal();
+  $('#outputLogInput').value='';
+  renderAll();
+  alert('Victim logs processed. New: '+added+' | Updated: '+updated);
+}
+
+function crossReferenceExternal(){
+  let flags=0;
+  const general=State.general||{};
+  for(const ip in State.external){
+    const ext=State.external[ip];
+    if(general[ip]){
+      ext.accessed='Accessed';ext.newIp=null;ext.scrambledFrom=null;
+      ext.linkedName=general[ip].name||'';
+      continue;
+    }
+    const wallets=[ext.wallet].concat(ext.altWallets||[]).filter(Boolean);
+    let matchIp=null;
+    for(const gip in general){
+      if(wallets.indexOf(general[gip].wallet)>=0){matchIp=gip;break;}
+    }
+    if(matchIp){
+      ext.accessed='NEW IP FOUND';ext.newIp=ip;ext.scrambledFrom=matchIp;
+      ext.linkedName=general[matchIp].name||'';
+      if(!general[matchIp].newIpFound)general[matchIp].newIpFound=[];
+      if(general[matchIp].newIpFound.indexOf(ip)<0){general[matchIp].newIpFound.push(ip);flags++;}
+    }else{
+      ext.accessed='unknown';ext.newIp=null;ext.scrambledFrom=null;ext.linkedName='';
+    }
+  }
+  if(flags>0){Store.save('general',State.general);logFile('⚠ '+flags+' NEW IP FOUND match(es).','err');}
+  Store.save('external',State.external);
+}
+
+function publishRecord(ip,target){
+  const r=State.database[ip];if(!r)return false;
+  const dst=target==='general'?State.general:State.database;
+  const copy=JSON.parse(JSON.stringify(r));
+  copy._contributor=State.myAccount.name||(State.currentUser&&State.currentUser.username)||'anon';
+  copy._publishedAt=new Date().toISOString();
+  if(!dst[ip]){dst[ip]=copy;return true;}
+  const ex=dst[ip];
+  ['name','lvl','rep','fw','encr','score','wallet','peakHour'].forEach(k=>{
+    if(copy[k]!=null&&copy[k]!=='')ex[k]=copy[k];
+  });
+  if(!ex.apps)ex.apps={};
+  for(const a in(copy.apps||{})){
+    const cur=parseInt(ex.apps[a],10)||0;
+    const nw=parseInt(copy.apps[a],10)||0;
+    if(nw>cur)ex.apps[a]=copy.apps[a];
+  }
+  if(!Array.isArray(ex.logHistory))ex.logHistory=[];
+  for(const h of(copy.logHistory||[])){
+    if(!ex.logHistory.some(x=>x.dedupeKey===h.dedupeKey))ex.logHistory.push(h);
+  }
+  ex.totalStolen=Math.max(ex.totalStolen||0,copy.totalStolen||0);
+  ex.hits=Math.max(ex.hits||0,copy.hits||0);
+  ex._contributor=copy._contributor;
+  ex._publishedAt=copy._publishedAt;
+  return true;
+}
+
+function publishAllToGeneral(){
+  if(!requireAuth())return;
+  const ips=Object.keys(State.database);
+  if(!ips.length){alert('Internal DB is empty.');return;}
+  let n=0;
+  for(const ip of ips)if(publishRecord(ip,'general'))n++;
+  Store.save('general',State.general);
+  renderAll();
+  alert('Published '+n+' IP(s). Internal intact.');
+}
+
+function operationalRecords(){
+  const src=State.settings.dbTab==='general'?State.general:State.database;
+  const groups={};
+  for(const ip in src){
+    const r=src[ip];
+    const name=r.name||r._contributor||'Unknown';
+    if(!groups[name])groups[name]={name,ips:[]};
+    if(groups[name].ips.indexOf(ip)<0)groups[name].ips.push(ip);
+  }
+  return Object.values(groups).sort((a,b)=>b.ips.length-a.ips.length||a.name.localeCompare(b.name));
+}
+
+/* OCR */
+const statusEl=$('#ocrStatus');
+function setStatus(m){if(statusEl)statusEl.textContent='Status: '+m;}
+function logFile(msg,cls){
+  const el=$('#fileDebug');if(!el)return;
+  if(el.textContent==='[no events yet]')el.textContent='';
+  const d=document.createElement('div');
+  if(cls)d.className=cls;
+  d.textContent='['+new Date().toLocaleTimeString()+'] '+msg;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+function logRaw(label,text){
+  const el=$('#fileDebug');if(!el)return;
+  const d=document.createElement('div');
+  d.className='raw';
+  d.textContent='--- '+label+' ---\n'+text+'\n--- END ---';
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+
+const KNOWN_APPS=['Antivirus','Spam','Rootkit','Firewall','Bypasser','Password Cracker','Password Encryptor','Proxy','Trace','Keygen','Siphon'];
+const APP_ALIASES={
+  'antivirus':'Antivirus','anti virus':'Antivirus','anti-virus':'Antivirus',
+  'rootkit':'Rootkit','root kit':'Rootkit','firewall':'Firewall','fire wall':'Firewall',
+  'bypasser':'Bypasser','bypass':'Bypasser','password cracker':'Password Cracker',
+  'password crack':'Password Cracker','pass cracker':'Password Cracker','passwordcracker':'Password Cracker',
+  'password encryptor':'Password Encryptor','passwordencryptor':'Password Encryptor',
+  'proxy':'Proxy','trace':'Trace','spam':'Spam','keygen':'Keygen','siphon':'Siphon','syphon':'Siphon',
+};
+function canonicalAppName(raw){
+  if(!raw)return null;
+  const c=raw.trim().toLowerCase().replace(/\s+/g,' ').replace(/[^a-z0-9 ]/g,'').trim();
+  if(!c)return null;
+  if(APP_ALIASES[c])return APP_ALIASES[c];
+  for(const a of KNOWN_APPS)if(c===a.toLowerCase())return a;
+  const w=c.split(' ');
+  for(let n=Math.min(3,w.length);n>=1;n--){
+    const sfx=w.slice(-n).join(' ');
+    if(APP_ALIASES[sfx])return APP_ALIASES[sfx];
+  }
+  return null;
+}
+function detectScreenType(text){
+  const hasInstalled=/installed\s+software|software\s+installed/i.test(text);
+  const hasIp=/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/.test(text);
+  const hasE=/\b(ENCRYPTOR|ENCRIPTADOR|ENC)\b/i.test(text);
+  const hasF=/\b(FIREWALL|CORTAFUEGOS|FW)\b/i.test(text);
+  const hasLevel=/\b(LVL|LEVEL|NIVEL|LV)\b/i.test(text);
+  const hasRep=/\b(REP|REPUTATION|REPUTACI[OÓ]N)\b/i.test(text);
+  const hasAccount=/\b(ACCOUNT|ACCT|USER|USERNAME|NOMBRE|CUENTA|ALIAS|CREW|NAME)\b/i.test(text);
+  let appHits=0;
+  for(const a of KNOWN_APPS){
+    const e=a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s+');
+    if(new RegExp('\\b'+e+'\\b','i').test(text))appHits++;
+  }
+  if(hasInstalled)return'apps';
+  if(hasIp&&(hasE||hasF||hasLevel||hasRep||hasAccount))return'main';
+  if(hasAccount&&hasLevel&&hasRep)return'main';
+  if(hasE&&hasF&&!hasInstalled&&!(hasLevel||hasRep||hasIp))return'apps';
+  if(hasIp)return'main';
+  if(appHits>=3)return'apps';
+  return'unknown';
+}
+
+function preprocessImage(file){
+  return new Promise((resolve,reject)=>{
+    const url=URL.createObjectURL(file);
+    const img=new Image();
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      try{
+        const MAX=1800,MIN=800;
+        const ms=Math.max(img.width,img.height);
+        let sc=1;
+        if(ms>MAX)sc=MAX/ms;else if(ms<MIN)sc=MIN/ms;
+        const w=Math.max(1,Math.round(img.width*sc));
+        const h=Math.max(1,Math.round(img.height*sc));
+        const cvs=document.createElement('canvas');
+        cvs.width=w;cvs.height=h;
+        const c=cvs.getContext('2d');
+        c.drawImage(img,0,0,w,h);
+        const id=c.getImageData(0,0,w,h);
+        const d=id.data;
+        let sum=0,ct=0,maxL=0;
+        for(let i=0;i<d.length;i+=4){
+          const l=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+          sum+=l;ct++;if(l>maxL)maxL=l;
+        }
+        const avg=sum/ct;
+        const dark=avg<128;
+        const threshold=Math.max(45,Math.min(140,maxL*0.35));
+        for(let i=0;i<d.length;i+=4){
+          const l=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];
+          const v=dark?(l>threshold?0:255):(l>threshold?255:0);
+          d[i]=d[i+1]=d[i+2]=v;
+          d[i+3]=255;
+        }
+        c.putImageData(id,0,0);
+        resolve(cvs);
+      }catch(e){reject(e);}
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('Image load failed'));};
+    img.src=url;
+  });
+}
+
+function withTimeout(p,ms,label){
+  return Promise.race([p,new Promise((_,rj)=>setTimeout(()=>rj(new Error(label+' timeout')),ms))]);
+}
+
+async function runOcr(file){
+  logFile('OCR start');
+  const canvas=await preprocessImage(file);
+  let text='';
+  if(!State.ocr.broken){
+    try{
+      if(!State.ocr.worker){
+        State.ocr.worker=await withTimeout(Tesseract.createWorker('eng'),60000,'createWorker');
+      }
+      const r=await withTimeout(State.ocr.worker.recognize(canvas),120000,'recognize');
+      text=(r&&r.data&&r.data.text)||'';
+    }catch(e){
+      logFile('Worker failed, using fallback','err');
+      State.ocr.broken=true;
+      State.ocr.worker=null;
+    }
+  }
+  if(!text){
+    setStatus('Fallback OCR...');
+    const r=await withTimeout(Tesseract.recognize(canvas,'eng'),120000,'recognize-fallback');
+    text=(r&&r.data&&r.data.text)||'';
+  }
+  State.ocr.lastText=text;
+  logFile('OCR done, '+text.length+' chars','ok');
+  logRaw('OCR raw',text);
+  return text;
+}
+
+async function parseScreenshot(file){
+  const out={ip:null,name:'',fw:'',encr:'',lvl:'',rep:'',score:'',apps:{},rawOcr:'',screenType:'unknown',_fileName:file.name||'pasted'};
+  const fnIp=(file.name||'').match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
+  if(fnIp)out.ip=fnIp[1];
+  const text=await runOcr(file);
+  out.rawOcr=text.slice(0,2500);
+  if(!text.trim()){logFile('No text from OCR','err');return out;}
+  out.screenType=detectScreenType(text);
+  const ipM=text.match(/\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b/);
+  if(ipM)out.ip=ipM[1];
+  const accountM=text.match(/(?:ACCOUNT|ACCT|USER|USERNAME|NOMBRE|CUENTA|ALIAS|CREW|NAME)\s*[:\-]?\s*([A-Za-z0-9_\-\.]{2,32})/i);
+  if(accountM)out.name=accountM[1].trim();
+  const ownedM=text.match(/([A-Za-z0-9_\-\.]{2,32})[''\u2018\u2019]s\s+installed\s+software/i);
+  if(ownedM&&!out.name)out.name=ownedM[1].trim();
+  if(out.screenType==='main'){
+    const fM=text.match(/(?:FIREWALL|CORTAFUEGOS|FW)\s*[:.\-]?\s*(?:LVL?\.?|LEVEL)?\s*(\d{1,3})/i);
+    if(fM)out.fw=fM[1];
+    const eM=text.match(/(?:ENCRYPTOR|ENCRIPTADOR|ENCR|ENC)\s*[:.\-]?\s*(?:LVL?\.?|LEVEL)?\s*(\d{1,3})/i);
+    if(eM)out.encr=eM[1];
+  }
+  const lvM=text.match(/(?:LEVEL|NIVEL|LVL|LV)\s*[:.\-]?\s*(\d{1,4})/i);
+  if(lvM)out.lvl=lvM[1];
+  const rpM=text.match(/(?:REPUTATION|REPUTACI[OÓ]N|REP)\s*[:.\-]?\s*([\d.,]{1,16})/i);
+  if(rpM)out.rep=cleanBigNumber(rpM[1]);
+  const scM=text.match(/(?:SCORE|PUNTAJE|PUNTOS|POINTS?)\s*[:.\-]?\s*([\d.,]{1,16})/i);
+  if(scM)out.score=cleanBigNumber(scM[1]);
+  if(out.screenType==='apps'){
+    for(const a of KNOWN_APPS){
+      const e=a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s+');
+      const rx=new RegExp('\\b'+e+'\\b','i');
+      const nm=text.match(rx);
+      if(!nm)continue;
+      const after=text.slice(nm.index+nm[0].length,nm.index+nm[0].length+300);
+      const la=after.match(/(?:LVL?\.?|LEVEL)\s*(\d{1,3})/i)
+        ||text.match(new RegExp('\\b'+e+'\\b\\s*(?:LVL?\.?|LEVEL)\\s*(\\d{1,3})','i'));
+      if(la)out.apps[a]=String(la[1]).trim();
+    }
+  }
+  return out;
+}
+
+async function processFiles(files){
+  if(State.busy){logFile('Busy, ignoring');return;}
+  if(!files.length)return;
+  if(typeof Tesseract==='undefined'){setStatus('ERROR: Tesseract not loaded');return;}
+  if(!requireAuth())return;
+  State.busy=true;
+  logFile('=== '+files.length+' file(s) ===');
+  setStatus(files.length+' file(s). OCR...');
+  const parsed=[];
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    setStatus('['+(i+1)+'/'+files.length+'] '+(f.name||'pasted').slice(0,30));
+    try{
+      const d=await parseScreenshot(f);
+      parsed.push(d);
+      logFile('parsed: type='+d.screenType+' ip='+(d.ip||'-')+' name='+(d.name||'-')+' lvl='+(d.lvl||'-'));
+    }catch(e){logFile('parse err: '+e.message,'err');}
+  }
+  applyParsed(parsed);
+  State.busy=false;
+  setStatus('Idle — OCR ready');
+}
+
+function applyParsed(parsed){
+  const mains=parsed.filter(p=>p.screenType==='main'&&p.ip);
+  const apps=parsed.filter(p=>p.screenType==='apps'&&p.name);
+  let pc=0,merged=false,upgrades=0;
+  if(mains.length===1&&apps.length===1&&mains[0].name&&apps[0].name&&mains[0].name.toLowerCase()===apps[0].name.toLowerCase()){
+    const main=mains[0],ap=apps[0];
+    if(!State.database[main.ip])State.database[main.ip]=emptyRecord(main.ip);
+    const rec=State.database[main.ip];
+    if(detectUpgrades(rec,main.fw,main.encr,main.lvl))upgrades++;
+    if(main.fw)rec.fw=cleanNumeric(main.fw);
+    if(main.encr)rec.encr=cleanNumeric(main.encr);
+    if(main.lvl)rec.lvl=cleanNumeric(main.lvl);
+    if(main.rep)rec.rep=cleanBigNumber(main.rep);
+    if(main.score)rec.score=cleanBigNumber(main.score);
+    if(ap.name&&!rec.name)rec.name=ap.name;
+    Object.assign(rec.apps,ap.apps);
+    rec.rawOcr=(main.rawOcr||'')+'\n\n--- APPS ---\n'+(ap.rawOcr||'');
+    merged=true;pc=1;
+  }else{
+    for(const d of parsed){
+      const any=d.ip||d.name||d.fw||d.encr||d.lvl||d.rep||d.score||Object.keys(d.apps).length;
+      if(!any){logFile('No usable data in '+d._fileName,'err');continue;}
+      let key;
+      if(d.ip)key=d.ip;
+      else if(d.name){
+        const ex=Object.keys(State.database).find(k=>!k.startsWith('PENDING_')&&State.database[k].name&&State.database[k].name.toLowerCase()===d.name.toLowerCase());
+        key=ex||('PENDING_'+d.name);
+      }else key='PENDING_UNKNOWN_'+Date.now();
+      if(!State.database[key])State.database[key]=emptyRecord(key);
+      const rec=State.database[key];
+      if(detectUpgrades(rec,d.fw,d.encr,d.lvl))upgrades++;
+      if(d.ip&&rec.ip.indexOf('PENDING')<0)rec.ip=d.ip;
+      if(d.name&&!rec.name)rec.name=d.name;
+      if(d.fw)rec.fw=cleanNumeric(d.fw)||rec.fw;
+      if(d.encr)rec.encr=cleanNumeric(d.encr)||rec.encr;
+      if(d.lvl)rec.lvl=cleanNumeric(d.lvl)||rec.lvl;
+      if(d.rep)rec.rep=cleanBigNumber(d.rep)||rec.rep;
+      if(d.score)rec.score=cleanBigNumber(d.score)||rec.score;
+      Object.assign(rec.apps,d.apps);
+      if(d.rawOcr)rec.rawOcr=d.rawOcr;
+      pc++;
+    }
+  }
+  saveInternal();
+  renderAll();
+  setStatus('Idle — '+(merged?'Merged MAIN+APPS.':pc+' indexed.')+(upgrades?' '+upgrades+' upgrades.':''));
+}
+
+function saveManualIntel(){
+  if(!requireAuth())return;
+  const ip=$('#ipInput').value.trim();
+  if(!ip){alert('Please provide an IP address!');return;}
+  if(!State.database[ip])State.database[ip]=emptyRecord(ip);
+  const r=State.database[ip];
+  const nm=$('#nameInput').value.trim();
+  const fw=$('#fwInput').value.trim();
+  const en=$('#encrInput').value.trim();
+  const lv=$('#lvlInput').value.trim();
+  const sc=$('#scoreInput').value.trim();
+  const rp=$('#repInput').value.trim();
+  const wl=$('#walletInput').value.trim();
+  if(nm)r.name=nm;
+  if(fw){detectUpgrades(r,fw,null,null);r.fw=cleanNumeric(fw);}
+  if(en){detectUpgrades(r,null,en,null);r.encr=cleanNumeric(en);}
+  if(lv){detectUpgrades(r,null,null,lv);r.lvl=cleanNumeric(lv);}
+  if(rp)r.rep=cleanBigNumber(rp);
+  if(sc)r.score=cleanBigNumber(sc);
+  if(wl)r.wallet=wl;
+  saveInternal();
+  renderAll();
+  alert('Intel saved: '+ip);
+  ['ipInput','nameInput','fwInput','encrInput','lvlInput','scoreInput','repInput','walletInput']
+    .forEach(id=>{const e=$('#'+id);if(e)e.value='';});
+}
+
+function requireAuth(){if(!State.currentUser){openAuthModal();return false;}return true;}
+function openAuthModal(){
+  if(State.currentUser)return;
+  $('#authOverlay').classList.add('show');
+  setAuthMode('login');
+  const u=$('#authUsername');
+  if(u){u.value='';setTimeout(()=>u.focus(),50);}
+}
+function closeAuthModal(){$('#authOverlay').classList.remove('show');}
+function setAuthMode(mode){
+  const isReg=mode==='register';
+  $('#authLoginTab').classList.toggle('active',!isReg);
+  $('#authRegisterTab').classList.toggle('active',isReg);
+  $('#authConfirmWrap').classList.toggle('hidden',!isReg);
+  $('#authSubmit').textContent=isReg?t('register'):t('login');
+  $('#authError').textContent='';
+  $('#authSubmit').dataset.mode=mode;
+}
+async function submitAuth(){
+  const mode=$('#authSubmit').dataset.mode||'login';
+  const u=($('#authUsername').value||'').trim().toLowerCase();
+  const p=$('#authPassword').value||'';
+  const pc=$('#authPasswordConfirm').value||'';
+  const err=$('#authError');
+  err.textContent='';
+  if(!/^[a-z0-9_\-]{3,32}$/.test(u)){err.textContent='Use 3-32 letters, numbers, _ or -.';return;}
+  if(p.length<8){err.textContent='Password must be at least 8 characters.';return;}
+  if(mode==='register'&&p!==pc){err.textContent='Passwords do not match.';return;}
+  try{
+    if(mode==='register')await Auth.register(u,p);
+    await Auth.login(u,p);
+    Auth.startSession(u);
+    State.currentUser={username:u};
+    loadInternal();
+    State.myAccount=Store.load('profile_'+u,{name:'',ip:'',level:'',rep:'',apps:{},lastUpdated:''});
+    if(!State.myAccount.apps)State.myAccount.apps={};
+    closeAuthModal();
+    renderAll();
+  }catch(e){err.textContent=e.message;}
+}
+function logoutUser(){
+  if(!confirm('Log out from '+State.currentUser.username+'?'))return;
+  Auth.logout();
+  State.currentUser=null;
+  State.database={};
+  State.myAccount={name:'',ip:'',level:'',rep:'',apps:{},lastUpdated:''};
+  renderAll();
+}
+function saveProfile(){if(!State.currentUser)return;Store.save('profile_'+State.currentUser.username,State.myAccount);}
+
+function renderAccountBar(){
+  const bar=$('#accountBar'),sum=$('#accountSummary'),status=$('#accountStatus');
+  if(!State.currentUser){
+    bar.classList.add('empty');bar.classList.remove('connected');
+    sum.textContent=t('notSet');status.textContent=t('connect');return;
+  }
+  bar.classList.remove('empty');bar.classList.add('connected');
+  status.textContent=t('connected');
+  const p=[State.currentUser.username];
+  if(State.myAccount.name)p.push(State.myAccount.name);
+  if(State.myAccount.level)p.push('Lvl '+State.myAccount.level);
+  if(State.myAccount.rep)p.push('Rep '+formatNum(State.myAccount.rep));
+  sum.textContent=p.join(' • ');
+}
+
+function filterBySearch(rec,q){
+  if(!q)return true;
+  const hay=[rec.ip,rec.name,rec.fw,rec.encr,rec.lvl,rec.score,rec.wallet]
+    .map(v=>String(v==null?'':v).toLowerCase()).join(' ');
+  const apps=Object.keys(rec.apps||{}).map(k=>k+' '+rec.apps[k]).join(' ').toLowerCase();
+  return hay.indexOf(q)>=0||apps.indexOf(q)>=0;
+}
+function sortRecords(recs,col,dir){
+  const sd=dir==='desc'?-1:1;
+  return recs.sort((a,b)=>{
+    let va,vb;
+    switch(col){
+      case'ip':va=a.ip||'';vb=b.ip||'';break;
+      case'name':va=a.name||'';vb=b.name||'';break;
+      case'lvl':va=parseInt(a.lvl,10)||0;vb=parseInt(b.lvl,10)||0;break;
+      case'fw':va=parseInt(a.fw,10)||0;vb=parseInt(b.fw,10)||0;break;
+      case'encr':va=parseInt(a.encr,10)||0;vb=parseInt(b.encr,10)||0;break;
+      case'rep':va=parseInt(a.rep,10)||0;vb=parseInt(b.rep,10)||0;break;
+      case'stolen':va=a.totalStolen||0;vb=b.totalStolen||0;break;
+      case'hits':va=a.hits||0;vb=b.hits||0;break;
+      case'revh':va=revenuePerHour(a);vb=revenuePerHour(b);break;
+      case'peak':va=a.peakHour||'';vb=b.peakHour||'';break;
+      default:va=a.hits>0?a.totalStolen/a.hits:0;vb=b.hits>0?b.totalStolen/b.hits:0;
+    }
+    if(typeof va==='string')return va.localeCompare(vb)*sd;
+    return(va-vb)*sd;
+  });
+}
+
+function makeRow(rec,opts){
+  const tr=document.createElement('tr');
+  tr.dataset.ip=rec.ip;
+  const tdT=document.createElement('td');tdT.className='ctr';
+  const mk=document.createElement('span');
+  mk.className='tgt-mark'+(rec.tgt?' on':'');
+  mk.textContent=rec.tgt?'@':'·';
+  if(opts.editable){
+    mk.addEventListener('click',e=>{
+      e.stopPropagation();
+      rec.tgt=!rec.tgt;
+      saveInternal();renderAll();
+    });
+  }
+  tdT.appendChild(mk);tr.appendChild(tdT);
+
+  const tdI=document.createElement('td');tdI.className='ip-cell';
+  const sp=document.createElement('span');
+  sp.className='clickable';sp.textContent=rec.ip;
+  sp.addEventListener('click',()=>openModal(rec.ip));
+  tdI.appendChild(sp);tr.appendChild(tdI);
+
+  const tdN=document.createElement('td');tdN.className='name-cell';
+  if(rec.name){
+    const sn=document.createElement('span');
+    sn.className='clickable';sn.textContent=rec.name;
+    sn.addEventListener('click',()=>openModal(rec.ip));
+    tdN.appendChild(sn);
+  }
+  const atk=document.createElement('span');
+  atk.innerHTML=attackInlineHtml(attackStatus(rec));
+  tdN.appendChild(atk.firstChild);
+  if(rec.newIpFound&&rec.newIpFound.length){
+    const badge=document.createElement('span');
+    badge.className='badge badge-new';
+    badge.textContent='NEW IP FOUND';
+    badge.title='New IP: '+rec.newIpFound.join(', ');
+    tdN.appendChild(badge);
+  }
+  if(isRecentWhale(rec)){const b=document.createElement('span');b.className='bdg bdg-whale';b.textContent='*';tdN.appendChild(b);}
+  if(isHotWallet(rec)){const b=document.createElement('span');b.className='bdg bdg-hot';b.textContent='!';tdN.appendChild(b);}
+  if(recentlyUpgraded(rec)){const b=document.createElement('span');b.className='bdg bdg-up';b.textContent='^';tdN.appendChild(b);}
+  if(opts.editable){
+    const pub=document.createElement('button');
+    pub.className='pub-btn';pub.textContent='PUB';
+    pub.title='Publish a copy to General.';
+    pub.addEventListener('click',e=>{
+      e.stopPropagation();
+      if(publishRecord(rec.ip,'general')){
+        Store.save('general',State.general);
+        renderAll();
+        logFile('PUB → '+rec.ip,'ok');
+      }
+    });
+    tdN.appendChild(pub);
+  }
+  tr.appendChild(tdN);
+
+  const avg=rec.hits>0?Math.round(rec.totalStolen/rec.hits):0;
+  const rph=revenuePerHour(rec);
+  const cells=[
+    {v:rec.lvl||''},
+    {v:rec.fw||''},
+    {v:rec.encr||''},
+    {v:rec.rep?formatNum(rec.rep):'',title:rec.rep?formatFull(rec.rep):''},
+    {v:rec.totalStolen?formatNum(rec.totalStolen):'',title:formatFull(rec.totalStolen||0)},
+    {v:rec.hits?String(rec.hits):''},
+    {v:avg?formatNum(avg):'',title:formatFull(avg)},
+    {v:formatRate(rph)},
+  ];
+  for(const c of cells){
+    const td=document.createElement('td');
+    td.className='num';td.textContent=c.v;
+    if(c.title)td.title=c.title;
+    tr.appendChild(td);
+  }
+  const tdP=document.createElement('td');tdP.className='ctr';
+  tdP.style.color='var(--yl)';tdP.style.fontSize='10px';
+  tdP.textContent=rec.peakHour||'--:--';
+  tr.appendChild(tdP);
+  return tr;
+}
+
+function renderInternalTable(){
+  const tbody=$('#tableBody');tbody.innerHTML='';
+  const q=($('#searchInput').value||'').trim().toLowerCase();
+  let recs=Object.values(State.database).filter(r=>filterBySearch(r,q));
+  recs=sortRecords(recs,State.settings.sortColumn,State.settings.sortDirection);
+  if(!recs.length){
+    const tr=document.createElement('tr');
+    const td=document.createElement('td');td.colSpan=12;
+    td.textContent=Object.keys(State.database).length?'No matches.':'Internal DB is empty.';
+    td.style.textAlign='center';
+    tr.appendChild(td);tbody.appendChild(tr);return;
+  }
+  for(const r of recs)tbody.appendChild(makeRow(r,{editable:true}));
+}
+
+function renderGeneralTable(){
+  const tbody=$('#generalTableBody');tbody.innerHTML='';
+  const q=($('#genSearchInput').value||'').trim().toLowerCase();
+  let recs=Object.values(State.general).filter(r=>filterBySearch(r,q));
+  recs=sortRecords(recs,State.settings.genSortColumn,State.settings.genSortDirection);
+  if(!recs.length){
+    const tr=document.createElement('tr');
+    const td=document.createElement('td');td.colSpan=12;
+    td.textContent='General DB is empty.';
+    td.style.textAlign='center';
+    tr.appendChild(td);tbody.appendChild(tr);return;
+  }
+  for(const r of recs)tbody.appendChild(makeRow(r,{editable:false}));
+}
+
+function renderExternalTable(){
+  const tbody=$('#externalTableBody');tbody.innerHTML='';
+  const q=($('#extSearchInput').value||'').trim().toLowerCase();
+  let recs=Object.values(State.external).filter(r=>{
+    if(!q)return true;
+    return(r.ip||'').toLowerCase().indexOf(q)>=0||(r.wallet||'').toLowerCase().indexOf(q)>=0;
+  });
+  for(const r of recs){
+    r._avgHour=(r.hours&&r.hours.length)?Math.round(r.hours.reduce((a,b)=>a+b,0)/r.hours.length):null;
+  }
+  const col=State.settings.extSortColumn;
+  const sd=State.settings.extSortDirection==='desc'?-1:1;
+  recs.sort((a,b)=>{
+    let va,vb;
+    switch(col){
+      case'ip':va=a.ip;vb=b.ip;break;
+      case'wallet':va=a.wallet||'';vb=b.wallet||'';break;
+      case'stolenFrom':va=a.stolenFromThem||0;vb=b.stolenFromThem||0;break;
+      case'theyStole':va=a.theyStole||0;vb=b.theyStole||0;break;
+      case'avgHour':va=a._avgHour!=null?a._avgHour:99;vb=b._avgHour!=null?b._avgHour:99;break;
+      case'accessed':va=a.accessed;vb=b.accessed;break;
+      default:va=a.theyStole;vb=b.theyStole;
+    }
+    if(typeof va==='string')return va.localeCompare(vb)*sd;
+    return(va-vb)*sd;
+  });
+  if(!recs.length){
+    const tr=document.createElement('tr');
+    const td=document.createElement('td');td.colSpan=7;
+    td.textContent='No external records.';
+    td.style.textAlign='center';
+    tr.appendChild(td);tbody.appendChild(tr);return;
+  }
+  for(const r of recs){
+    const tr=document.createElement('tr');
+    const tdI=document.createElement('td');tdI.className='ip-cell';tdI.textContent=r.ip;tr.appendChild(tdI);
+    const tdW=document.createElement('td');tdW.style.fontSize='10px';
+    tdW.textContent=r.wallet||'—';
+    if(r.altWallets&&r.altWallets.length){tdW.textContent+=' (+'+r.altWallets.length+')';tdW.title=r.altWallets.join(', ');}
+    tr.appendChild(tdW);
+    const tdA=document.createElement('td');tdA.style.fontSize='10px';tdA.textContent=r.linkedName||'--';tr.appendChild(tdA);
+    const tdR=document.createElement('td');tdR.className='num';tdR.textContent=r.stolenFromThem?formatNum(r.stolenFromThem):'0';tr.appendChild(tdR);
+    const tdS=document.createElement('td');tdS.className='num';tdS.style.color='var(--yl)';tdS.textContent=r.theyStole?formatNum(r.theyStole):'0';tr.appendChild(tdS);
+    const tdH=document.createElement('td');tdH.className='ctr';tdH.style.fontSize='10px';tdH.style.color='var(--yl)';
+    tdH.textContent=r._avgHour!=null?formatPeak(r._avgHour):'--';tr.appendChild(tdH);
+    const tdAcc=document.createElement('td');tdAcc.className='ctr';
+    const b=document.createElement('span');
+    if(r.accessed==='Accessed'){b.className='badge badge-yes';b.textContent='Accessed';}
+    else if(r.accessed==='NEW IP FOUND'){b.className='badge badge-new';b.textContent='⚠ New IP';}
+    else{b.className='badge badge-no';b.textContent='unknown';}
+    tdAcc.appendChild(b);tr.appendChild(tdAcc);
+    tbody.appendChild(tr);
+  }
+}
+
+function renderMetrics(){
+  const source=State.settings.dbTab==='general'?State.general
+    :State.settings.dbTab==='external'?State.external
+    :State.database;
+  const recs=Object.values(source);
+  let total=0,hits=0;
+  for(const r of recs){
+    const stolen=r.totalStolen!=null?r.totalStolen:(r.theyStole||0);
+    const h=r.hits!=null?r.hits:((r.hours||[]).length);
+    total+=Number(stolen)||0;hits+=Number(h)||0;
+  }
+  $('#avgStolenMetric').value=(hits>0?Math.round(total/hits).toLocaleString():0)+' Cr';
+  $('#targetsMetric').value=recs.length;
+  $('#totalStolenMetric').value=formatNum(total)+' Cr';
+  $('#peakHourMetric').value=State.settings.dbTab==='internal'?globalPeakHour():'--:--';
+  const opSel=$('#operatorsOnlineMetric');
+  opSel.innerHTML='';
+  const names=State.settings.dbTab==='general'&&State.crewOnline?(State.crewOperators||[]):[State.currentUser?State.currentUser.username:'LOCAL'];
+  (names.length?names:['0']).forEach(n=>{const opt=document.createElement('option');opt.textContent=n;opSel.appendChild(opt);});
+}
+
+function renderSortIndicators(){
+  $$('#intelTable th.sortable').forEach(th=>{
+    th.classList.toggle('sort-active',th.dataset.sort===State.settings.sortColumn);
+    const arrow=th.querySelector('.sort-arrow');if(arrow)arrow.remove();
+    if(th.dataset.sort===State.settings.sortColumn){
+      const a=document.createElement('span');a.className='sort-arrow';
+      a.textContent=State.settings.sortDirection==='desc'?'▼':'▲';th.appendChild(a);
+    }
+  });
+  $$('#generalTable th.sortable').forEach(th=>{
+    th.classList.toggle('sort-active',th.dataset.genSort===State.settings.genSortColumn);
+    const arrow=th.querySelector('.sort-arrow');if(arrow)arrow.remove();
+    if(th.dataset.genSort===State.settings.genSortColumn){
+      const a=document.createElement('span');a.className='sort-arrow';
+      a.textContent=State.settings.genSortDirection==='desc'?'▼':'▲';th.appendChild(a);
+    }
+  });
+  $$('#externalTable th.sortable').forEach(th=>{
+    th.classList.toggle('sort-active',th.dataset.extSort===State.settings.extSortColumn);
+    const arrow=th.querySelector('.sort-arrow');if(arrow)arrow.remove();
+    if(th.dataset.extSort===State.settings.extSortColumn){
+      const a=document.createElement('span');a.className='sort-arrow';
+      a.textContent=State.settings.extSortDirection==='desc'?'▼':'▲';th.appendChild(a);
+    }
+  });
+}
+
+function renderTabs(){
+  $$('[data-log-tab]').forEach(b=>b.classList.toggle('active',b.dataset.logTab===State.settings.logTab));
+  $('#logPanelInput').classList.toggle('hidden',State.settings.logTab!=='input');
+  $('#logPanelOutput').classList.toggle('hidden',State.settings.logTab!=='output');
+  $$('[data-db-tab]').forEach(b=>b.classList.toggle('active',b.dataset.dbTab===State.settings.dbTab));
+  $('#dbPanelInternal').classList.toggle('hidden',State.settings.dbTab!=='internal');
+  $('#dbPanelGeneral').classList.toggle('hidden',State.settings.dbTab!=='general');
+  $('#dbPanelExternal').classList.toggle('hidden',State.settings.dbTab!=='external');
+}
+function renderAuthState(){
+  const logged=!!State.currentUser;
+  $('#authGate').classList.toggle('hidden',logged);
+  $('#internalContent').classList.toggle('hidden',!logged);
+}
+
+function renderAll(){
+  renderTabs();
+  renderAuthState();
+  renderAccountBar();
+  renderSortIndicators();
+  renderMetrics();
+  renderInternalTable();
+  renderGeneralTable();
+  renderExternalTable();
+  const b=$('#myBypasser');if(b)b.value=State.myAccount.apps['Bypasser']||'';
+  const p=$('#myPasswordCracker');if(p)p.value=State.myAccount.apps['Password Cracker']||'';
+  const apiIn=$('#apiBaseInput');
+  if(apiIn&&document.activeElement!==apiIn)apiIn.value=CONFIG.apiBase||'';
+}
+
+function openModal(ip){
+  const r=State.database[ip]||State.general[ip];
+  if(!r){alert('No data for this IP.');return;}
+  State.modal.ip=ip;
+  State.modal.edit=false;
+  renderModal();
+  $('#modalOverlay').classList.add('show');
+}
+function closeModal(){
+  $('#modalOverlay').classList.remove('show');
+  State.modal.ip=null;
+  State.modal.edit=false;
+}
+function renderModal(){
+  const ip=State.modal.ip;
+  if(!ip){closeModal();return;}
+  const r=State.database[ip]||State.general[ip];
+  if(!r){closeModal();return;}
+  const isInternal=!!State.database[ip];
+  $('#modalTitle').textContent=r.name||ip;
+  let html='';
+  if(State.modal.edit&&isInternal){
+    html+='<div class="term-section"><span class="term-prompt">edit</span><div class="term-body">';
+    html+='<input class="edit-input" id="mName" placeholder="Name" value="'+esc(r.name)+'">';
+    html+='<div class="grid-row"><input class="edit-input" id="mLvl" placeholder="Level" value="'+esc(r.lvl)+'"><input class="edit-input" id="mRep" placeholder="Rep" value="'+esc(r.rep)+'"></div>';
+    html+='<div class="grid-row"><input class="edit-input" id="mFw" placeholder="FW" value="'+esc(r.fw)+'"><input class="edit-input" id="mEncr" placeholder="ENCR" value="'+esc(r.encr)+'"></div>';
+    html+='<input class="edit-input" id="mScore" placeholder="Score" value="'+esc(r.score)+'">';
+    html+='<input class="edit-input" id="mWallet" placeholder="Wallet" value="'+esc(r.wallet)+'">';
+    html+='</div></div>';
+  }else{
+    const score=(parseInt(r.score,10))||((parseInt(r.lvl,10)||0)*(parseInt(r.rep,10)||0));
+    const atk=attackStatus(r);
+    const atkLabel=atk==='fast'?'++ fast':atk==='ok'?'+ attackable':atk==='no'?'- blocked':'? set loadout';
+    html+='<div class="term-section"><div class="term-body">';
+    html+='<div class="kv"><span class="k">name</span><span class="v'+(r.name?'':' unknown')+'">'+(r.name?esc(r.name):'unknown')+'</span></div>';
+    html+='<div class="kv"><span class="k">ip</span><span class="v">'+esc(ip)+'</span></div>';
+    html+='<div class="kv"><span class="k">lvl</span><span class="v'+(r.lvl?'':' unknown')+'">'+(r.lvl?esc(r.lvl):'unknown')+'</span></div>';
+    html+='<div class="kv"><span class="k">rep</span><span class="v'+(r.rep?'':' unknown')+'">'+(r.rep?formatNum(r.rep)+'<span class="meta">('+formatFull(r.rep)+')</span>':'unknown')+'</span></div>';
+    html+='<div class="kv"><span class="k">score</span><span class="v">'+(score>0?formatNum(score):'<span class="unknown">unknown</span>')+'</span></div>';
+    html+='<div class="kv"><span class="k">wallet</span><span class="v'+(r.wallet?'':' unknown')+'">'+(r.wallet?esc(r.wallet):'unknown')+'</span></div>';
+    html+='<div class="kv"><span class="k">attack</span><span class="v"><span class="atk-inline atk-'+atk+'">'+atkLabel+'</span></span></div>';
+    html+='</div></div>';
+    const up=recentlyUpgraded(r);
+    if(up){
+      let dd='';
+      if(up==='fw')dd='fw '+(r.fwPrev||'?')+' → '+r.fw;
+      else if(up==='encr')dd='encr '+(r.encrPrev||'?')+' → '+r.encr;
+      else dd='lvl increased';
+      html+='<div class="term-section"><div class="term-body"><div style="color:#33ff88;font-size:11px">! '+esc(dd)+' — bonus rep on re-hack</div></div></div>';
+    }
+  }
+  html+='<div class="term-section"><span class="term-prompt">apps</span><div class="term-body">';
+  for(const a of KNOWN_APPS){
+    const lv=r.apps&&r.apps[a];
+    html+='<div class="app-line"><span class="an">'+esc(a)+'</span><span class="dots"></span><span class="av'+(lv?'':' unknown')+'">'+(lv?esc(lv):'--')+'</span></div>';
+  }
+  html+='</div></div>';
+  if(r.logHistory&&r.logHistory.length){
+    html+='<div class="term-section"><span class="term-prompt">peak '+esc(r.peakHour||'--:--')+'</span><div class="term-body">'+renderHourBar(r.logHistory)+'</div></div>';
+  }
+  if(r.hits){
+    html+='<div class="term-section"><span class="term-prompt">log</span><div class="term-body">';
+    html+='<div style="font-size:11px">hits '+r.hits+' · total '+formatNum(r.totalStolen)+' Cr · avg '+formatNum(Math.round(r.totalStolen/r.hits))+' · rev '+formatRate(revenuePerHour(r))+'</div>';
+    html+='</div></div>';
+  }
+  html+='<div class="term-section"><span class="term-prompt">notes</span><div class="term-body"><textarea class="note-area" id="mNotes" placeholder="...">'+esc(r.notes||'')+'</textarea></div></div>';
+  $('#modalBody').innerHTML=html;
+  const notes=$('#mNotes');
+  if(notes){
+    notes.addEventListener('blur',()=>{
+      const cur=State.database[ip];
+      if(cur){cur.notes=notes.value;saveInternal();}
+    });
+  }
+  const actions=$('#modalActions');
+  actions.innerHTML='';
+  if(State.modal.edit&&isInternal){
+    actions.innerHTML='<button class="act-primary" data-mact="save">SAVE</button><button data-mact="cancel">CANCEL</button>';
+  }else{
+    let h='';
+    if(isInternal){
+      h+='<button class="act-primary" data-mact="edit">EDIT</button>';
+      h+='<button class="act-gold" data-mact="tgt">'+(r.tgt?'UNTGT':'TGT')+'</button>';
+      h+='<button data-mact="pub">PUB</button>';
+    }
+    h+='<button data-mact="copy">COPY</button>';
+    h+='<button class="act-danger" data-mact="close">X</button>';
+    actions.innerHTML=h;
+  }
+  actions.querySelectorAll('[data-mact]').forEach(btn=>{
+    btn.addEventListener('click',()=>handleModalAction(btn.dataset.mact));
+  });
+}
+function handleModalAction(act){
+  const ip=State.modal.ip;
+  if(!ip)return;
+  const r=State.database[ip];
+  switch(act){
+    case'edit':State.modal.edit=true;renderModal();break;
+    case'cancel':State.modal.edit=false;renderModal();break;
+    case'save':
+      if(!r)return;
+      const nF=$('#mFw').value.trim(),nE=$('#mEncr').value.trim(),nL=$('#mLvl').value.trim();
+      detectUpgrades(r,nF,nE,nL);
+      r.name=$('#mName').value.trim();
+      if(nL)r.lvl=cleanNumeric(nL);
+      r.score=cleanBigNumber($('#mScore').value.trim());
+      if(nF)r.fw=cleanNumeric(nF);
+      if(nE)r.encr=cleanNumeric(nE);
+      r.rep=cleanBigNumber($('#mRep').value.trim());
+      r.wallet=$('#mWallet').value.trim();
+      saveInternal();
+      State.modal.edit=false;
+      renderAll();renderModal();
+      break;
+    case'tgt':
+      if(!r)return;
+      r.tgt=!r.tgt;
+      saveInternal();renderAll();renderModal();
+      break;
+    case'pub':
+      if(publishRecord(ip,'general')){
+        Store.save('general',State.general);
+        renderAll();
+        logFile('PUB → '+ip,'ok');
+      }
+      break;
+    case'copy':
+      navigator.clipboard.writeText(ip).then(()=>logFile('IP copied: '+ip,'ok')).catch(()=>{});
+      break;
+    case'close':closeModal();break;
+  }
+}
+function renderHourBar(logHistory){
+  const counts=new Array(24).fill(0);
+  for(const h of logHistory){
+    const hr=extractHour(h.time);
+    if(hr!==null)counts[hr]+=h.amount;
+  }
+  const mx=Math.max.apply(null,counts.concat([1]));
+  let s='<div class="hour-bar">';
+  for(let i=0;i<24;i++){
+    const op=(counts[i]/mx).toFixed(2);
+    s+='<span title="'+i+':00 — '+counts[i].toLocaleString()+' Cr" style="background:rgba(0,255,102,'+op+')"></span>';
+  }
+  s+='</div>';
+  s+='<div class="hour-labels"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>';
+  return s;
+}
+
+async function crewLogin(){
+  if(!Api.online){alert('Open this page from the server URL (not local file).');return;}
+  const id=$('#crewIdentification').value.trim();
+  const pw=$('#crewPassword').value;
+  if(!id||!pw){alert('Enter crew ID and password.');return;}
+  try{
+    await Api.login(id,pw);
+    const g=await Api.getGeneral();
+    State.general=g.records||{};
+    Store.save('general',State.general);
+    State.crewOnline=true;
+    $('#crewConnectionStatus').textContent='connected';
+    try{
+      const ops=await Api.getOperators();
+      State.crewOperators=ops.operators||[];
+    }catch(e){State.crewOperators=[];}
+    crossReferenceExternal();
+    renderAll();
+    alert('Connected to crew server.');
+  }catch(e){alert('Crew login failed: '+e.message);}
+}
+async function crewCreate(){
+  if(!Api.online){alert('Open this page from the server URL (not local file).');return;}
+  const id=$('#crewIdentification').value.trim();
+  const pw=$('#crewPassword').value;
+  if(!id||!pw){alert('Enter crew ID and password.');return;}
+  try{
+    await Api.register(id,pw);
+    await Api.login(id,pw);
+    State.crewOnline=true;
+    $('#crewConnectionStatus').textContent='created';
+    alert('Crew server created.');
+  }catch(e){alert('Create failed: '+e.message);}
+}
+
+/* shareGeneral() kept for future use — no UI button currently wired */
+function shareGeneral(){
+  const payload={exportedAt:new Date().toISOString(),by:State.myAccount.name||(State.currentUser&&State.currentUser.username)||'anon',count:Object.keys(State.general).length,records:State.general};
+  const block='CCC-GENERAL-v1\n'+JSON.stringify(payload)+'\nEND-CCC-GENERAL';
+  $('#modalTitle').textContent='SHARE GENERAL DB';
+  $('#modalBody').innerHTML='<div style="font-size:11px;color:var(--yl);margin-bottom:6px">Copy this block and send it to your crew.</div><textarea id="shareBox" readonly style="height:320px;font-size:9px;white-space:pre;word-break:break-all"></textarea>';
+  $('#modalActions').innerHTML='<button class="act-primary" data-mact="copyShare">COPY</button><button class="act-danger" data-mact="close">X</button>';
+  $('#modalOverlay').classList.add('show');
+  const box=$('#shareBox');
+  box.value=block;
+  setTimeout(()=>box.focus(),50);
+  $('#modalActions').querySelector('[data-mact="copyShare"]').addEventListener('click',()=>{
+    box.select();try{document.execCommand('copy');logFile('Block copied.','ok');}catch(e){}
+  });
+  $('#modalActions').querySelector('[data-mact="close"]').addEventListener('click',closeModal);
+}
+function importGeneral(){
+  $('#modalTitle').textContent='IMPORT GENERAL DB';
+  $('#modalBody').innerHTML='<div style="font-size:11px;color:var(--yl);margin-bottom:6px">Paste a block from a crew member.</div><textarea id="importBox" style="height:320px;font-size:9px;white-space:pre;word-break:break-all" placeholder="CCC-GENERAL-v1&#10;..."></textarea>';
+  $('#modalActions').innerHTML='<button class="act-primary" data-mact="doImport">IMPORT</button><button class="act-danger" data-mact="close">X</button>';
+  $('#modalOverlay').classList.add('show');
+  $('#modalActions').querySelector('[data-mact="doImport"]').addEventListener('click',doImportGeneral);
+  $('#modalActions').querySelector('[data-mact="close"]').addEventListener('click',closeModal);
+}
+function doImportGeneral(){
+  const raw=$('#importBox').value.trim();
+  if(!raw){alert('Empty.');return;}
+  const js=raw.indexOf('{'),je=raw.lastIndexOf('}');
+  if(js<0||je<0){alert('Invalid block.');return;}
+  let parsed;
+  try{parsed=JSON.parse(raw.slice(js,je+1));}
+  catch(e){alert('Parse error: '+e.message);return;}
+  const incoming=parsed.records||parsed.generalDb||parsed.database||parsed;
+  let added=0,merged=0;
+  for(const ip in incoming){
+    const i=incoming[ip];
+    if(!i||!i.ip)continue;
+    if(!State.general[ip]){State.general[ip]=JSON.parse(JSON.stringify(i));added++;}
+    else{
+      const ex=State.general[ip];
+      ['name','lvl','rep','fw','encr','score','wallet','peakHour'].forEach(k=>{
+        if(i[k]!=null&&i[k]!=='')ex[k]=i[k];
+      });
+      Object.assign(ex.apps=ex.apps||{},i.apps||{});
+      ex.totalStolen=Math.max(ex.totalStolen||0,i.totalStolen||0);
+      ex.hits=Math.max(ex.hits||0,i.hits||0);
+      merged++;
+    }
+  }
+  Store.save('general',State.general);
+  closeModal();
+  crossReferenceExternal();
+  renderAll();
+  alert('Import done. New: '+added+' | Merged: '+merged);
+}
+
+async function adminPurge(){
+  const pw = prompt('ADMIN PASSWORD REQUIRED FOR PURGE (leave blank to purge LOCAL only):');
+  if (pw === null) return; // cancel
+
+  const before = Object.keys(State.general).length;
+  if (before === 0 && !(Api.online && State.crewOnline)) {
+    alert('General DB is already empty.');
+    return;
+  }
+
+  const serverAvail = Api.online && State.crewOnline;
+  if (!confirm('PURGE GENERAL DATABASE?\n\nLocal records: ' + before +
+               '\nServer purge: ' + (serverAvail ? 'YES' : 'NO (not logged in / offline)') +
+               '\n\nThis cannot be undone.')) return;
+
+  let serverMsg = '';
+
+  // 1) Try server purge if available
+  if (serverAvail) {
+    if (!pw) {
+      serverMsg = ' (server skipped — no password entered)';
+    } else {
+      try {
+        await Api.adminPurge(pw);
+        serverMsg = ' + server';
+      } catch (e) {
+        if (!confirm('Server rejected purge: ' + e.message + '\n\nPurge LOCAL anyway?')) return;
+        serverMsg = ' (server failed: ' + e.message + ')';
+      }
+    }
+  }
+
+  // 2) Always clear local
+  State.general = {};
+  Store.save('general', State.general);
+  try { localStorage.removeItem('ccc_general'); } catch(e) {}
+
+  renderAll();
+
+  logFile('General purged' + serverMsg + ' — ' + before + ' record(s) removed.', 'err');
+  alert('General purged' + serverMsg + '.\n' + before + ' record(s) removed.');
+}
+
+function openOperationalList(){
+  const list=operationalRecords();
+  let html='<div class="operational-list">';
+  if(!list.length)html+='<div style="font-size:11px;color:var(--yl);opacity:.85">No registered operators found.</div>';
+  for(const item of list){
+    html+='<details><summary>'+esc(item.name)+' <span style="color:#666">('+item.ips.length+' IPs)</span></summary>';
+    html+='<div style="padding:6px 0 2px 12px;color:var(--tm);font-size:11px;line-height:1.6">';
+    html+=item.ips.map(esc).join('<br>');
+    html+='</div></details>';
+  }
+  html+='</div>';
+  $('#modalTitle').textContent='OPERATIONAL LIST';
+  $('#modalBody').innerHTML=html;
+  $('#modalActions').innerHTML='<button class="act-danger" data-mact="close">CLOSE</button>';
+  $('#modalOverlay').classList.add('show');
+  $('#modalActions').querySelector('[data-mact="close"]').addEventListener('click',closeModal);
+}
+
+function externalSnapshot(ext){
+  const r=emptyRecord(ext.ip);
+  r.name=ext.linkedName||'';
+  r.wallet=ext.wallet||'';
+  r.totalStolen=Number(ext.theyStole)||0;
+  r.hits=Array.isArray(ext.hours)?ext.hours.length:0;
+  r.peakHour='--:--';
+  r.notes='Exported from EXTERNAL';
+  return r;
+}
+function exportExternalToInternal(){
+  if(!requireAuth())return;
+  let n=0;
+  for(const ip in State.external){
+    const ext=State.external[ip];
+    const inc=externalSnapshot(ext);
+    if(!State.database[ip])State.database[ip]=emptyRecord(ip);
+    const rec=State.database[ip];
+    if(inc.name&&!rec.name)rec.name=inc.name;
+    if(inc.wallet)rec.wallet=inc.wallet;
+    rec.totalStolen=Math.max(Number(rec.totalStolen)||0,inc.totalStolen);
+    rec.hits=Math.max(Number(rec.hits)||0,inc.hits);
+    n++;
+  }
+  saveInternal();renderAll();
+  alert('Exported '+n+' external record(s) to INTERNAL.');
+}
+function exportExternalToGeneral(){
+  let n=0;
+  for(const ip in State.external){
+    const inc=externalSnapshot(State.external[ip]);
+    if(!State.general[ip])State.general[ip]=inc;
+    else{
+      const rec=State.general[ip];
+      if(inc.name&&!rec.name)rec.name=inc.name;
+      if(inc.wallet)rec.wallet=inc.wallet;
+      rec.totalStolen=Math.max(Number(rec.totalStolen)||0,inc.totalStolen);
+      rec.hits=Math.max(Number(rec.hits)||0,inc.hits);
+    }
+    n++;
+  }
+  Store.save('general',State.general);
+  crossReferenceExternal();
+  renderAll();
+  alert('Exported '+n+' external record(s) to GENERAL.');
+}
+
+function bindEvents(){
+  $('#langToggle').addEventListener('change',e=>{
+    State.settings.lang=e.target.value;
+    Store.save('settings',State.settings);
+    applyLanguage();renderAll();
+  });
+  $('#accountBar').addEventListener('click',e=>{
+    if(e.target.id==='accountDisconnect')return;
+    if(!State.currentUser)openAuthModal();
+  });
+  $('#accountDisconnect').addEventListener('click',e=>{
+    e.stopPropagation();
+    if(State.currentUser)logoutUser();
+  });
+  $('#openAuthBtn').addEventListener('click',openAuthModal);
+  $('#authLoginTab').addEventListener('click',()=>setAuthMode('login'));
+  $('#authRegisterTab').addEventListener('click',()=>setAuthMode('register'));
+  $('#authSubmit').addEventListener('click',submitAuth);
+  $('#authCancelBtn').addEventListener('click',closeAuthModal);
+  $('#authPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth();});
+  $('#authPasswordConfirm').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth();});
+  $$('[data-log-tab]').forEach(b=>b.addEventListener('click',()=>{
+    State.settings.logTab=b.dataset.logTab;
+    Store.save('settings',State.settings);
+    renderTabs();
+  }));
+  $('#processLogsBtn').addEventListener('click',processInputLogs);
+  $('#processOutputBtn').addEventListener('click',processOutputLogs);
+  $$('[data-db-tab]').forEach(b=>b.addEventListener('click',()=>{
+    State.settings.dbTab=b.dataset.dbTab;
+    Store.save('settings',State.settings);
+    renderAll();
+  }));
+  $('#myBypasser').addEventListener('input',e=>{
+    const v=e.target.value.trim();
+    if(v)State.myAccount.apps['Bypasser']=parseInt(v,10)||0;
+    else delete State.myAccount.apps['Bypasser'];
+    saveProfile();renderAll();
+  });
+  $('#myPasswordCracker').addEventListener('input',e=>{
+    const v=e.target.value.trim();
+    if(v)State.myAccount.apps['Password Cracker']=parseInt(v,10)||0;
+    else delete State.myAccount.apps['Password Cracker'];
+    saveProfile();renderAll();
+  });
+  $('#searchInput').addEventListener('input',()=>renderInternalTable());
+  $('#genSearchInput').addEventListener('input',()=>renderGeneralTable());
+  $('#extSearchInput').addEventListener('input',()=>renderExternalTable());
+  $$('#intelTable th.sortable').forEach(th=>th.addEventListener('click',()=>{
+    const c=th.dataset.sort;
+    if(State.settings.sortColumn===c)State.settings.sortDirection=State.settings.sortDirection==='desc'?'asc':'desc';
+    else{State.settings.sortColumn=c;State.settings.sortDirection=(c==='ip'||c==='name'||c==='peak')?'asc':'desc';}
+    Store.save('settings',State.settings);renderAll();
+  }));
+  $$('#generalTable th.sortable').forEach(th=>th.addEventListener('click',()=>{
+    const c=th.dataset.genSort;
+    if(State.settings.genSortColumn===c)State.settings.genSortDirection=State.settings.genSortDirection==='desc'?'asc':'desc';
+    else{State.settings.genSortColumn=c;State.settings.genSortDirection=(c==='ip'||c==='name'||c==='peak')?'asc':'desc';}
+    Store.save('settings',State.settings);renderAll();
+  }));
+  $$('#externalTable th.sortable').forEach(th=>th.addEventListener('click',()=>{
+    const c=th.dataset.extSort;
+    if(State.settings.extSortColumn===c)State.settings.extSortDirection=State.settings.extSortDirection==='desc'?'asc':'desc';
+    else{State.settings.extSortColumn=c;State.settings.extSortDirection=(c==='ip'||c==='wallet'||c==='accessed')?'asc':'desc';}
+    Store.save('settings',State.settings);renderAll();
+  }));
+  $('#manualHeader').addEventListener('click',()=>{
+    $('#manualBlock').classList.toggle('hidden');
+    $('#manualBlockArrow').classList.toggle('open');
+  });
+  $('#saveManualBtn').addEventListener('click',saveManualIntel);
+  $('#cameraInput').addEventListener('change',e=>{
+    const files=Array.from(e.target.files||[]);
+    e.target.value='';
+    processFiles(files);
+  });
+  $('#pasteZone').addEventListener('paste',e=>{
+    const items=(e.clipboardData&&e.clipboardData.items)||[];
+    const files=[];
+    for(const it of items){
+      if(it.kind==='file'&&it.type&&it.type.indexOf('image/')===0){
+        const f=it.getAsFile();
+        if(f)files.push(f);
+      }
+    }
+    if(files.length){e.preventDefault();processFiles(files);}
+    else logFile('Paste: no image','err');
+  });
+  $('#ocrStatus').addEventListener('click',()=>{
+    if(!State.ocr.lastText){alert('No OCR text captured yet.');return;}
+    alert('=== LAST OCR OUTPUT ===\n\n'+State.ocr.lastText);
+  });
+  $('#publishAllBtn').addEventListener('click',publishAllToGeneral);
+  $('#importGeneralBtn').addEventListener('click',importGeneral);
+  $('#adminPurgeBtn').addEventListener('click',adminPurge);
+  $('#clearInternalBtn').addEventListener('click',()=>{
+    if(!requireAuth())return;
+    if(!confirm('PURGE INTERNAL DATABASE? This cannot be undone.'))return;
+    State.database={};saveInternal();renderAll();
+    logFile('Internal purged.','err');
+  });
+  $('#clearExternalBtn').addEventListener('click',()=>{
+    const p=prompt('Type PURGE to confirm clearing ALL external records:','');
+    if(p!=='PURGE'){if(p!==null)alert('Cancelled.');return;}
+    State.external={};Store.remove('external');renderAll();
+    logFile('External purged.','err');
+  });
+  $('#extToInternalBtn').addEventListener('click',exportExternalToInternal);
+  $('#extToGeneralBtn').addEventListener('click',exportExternalToGeneral);
+  $('#crewLoginBtn').addEventListener('click',crewLogin);
+  $('#crewCreateBtn').addEventListener('click',crewCreate);
+  $('#crewPassword').addEventListener('keydown',e=>{if(e.key==='Enter')crewLogin();});
+  $('#apiSaveBtn').addEventListener('click',()=>{
+    CONFIG.apiBase=$('#apiBaseInput').value.trim().replace(/\/$/,'');
+    Store.save('apiBase',CONFIG.apiBase);
+    alert('API base set to: '+(CONFIG.apiBase||'(offline)'));
+  });
+  $('#openOpListBtn').addEventListener('click',openOperationalList);
+  $('#modalCloseX').addEventListener('click',closeModal);
+  $('#modalOverlay').addEventListener('click',e=>{
+    if(e.target.id==='modalOverlay')closeModal();
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&$('#modalOverlay').classList.contains('show'))closeModal();
+  });
+}
+
+function boot(){
+  const savedSettings=Store.load('settings',null);
+  if(savedSettings)Object.assign(State.settings,savedSettings);
+  const savedApi=Store.load('apiBase',null);
+  if(savedApi!=null&&!CONFIG.apiBase)CONFIG.apiBase=savedApi;
+  State.general=Store.load('general',{})||{};
+  State.external=Store.load('external',{})||{};
+  const sess=Auth.loadSession();
+  if(sess){
+    State.currentUser={username:sess.username};
+    loadInternal();
+    State.myAccount=Store.load('profile_'+sess.username,{name:'',ip:'',level:'',rep:'',apps:{},lastUpdated:''});
+    if(!State.myAccount.apps)State.myAccount.apps={};
+  }
+  applyLanguage();
+  bindEvents();
+  crossReferenceExternal();
+  renderAll();
+  logFile('Boot OK — v'+CONFIG.version+' — API: '+(CONFIG.apiBase||'offline'));
+  if(typeof Tesseract==='undefined'){
+    setStatus('Waiting — Tesseract loading...');
+    let tries=0;
+    const wait=setInterval(()=>{
+      tries++;
+      if(typeof Tesseract!=='undefined'){clearInterval(wait);setStatus('Idle — OCR ready');}
+      else if(tries>20){clearInterval(wait);setStatus('ERROR — Tesseract failed to load');}
+    },1500);
+  }else setStatus('Idle — OCR ready');
+}
+boot();
+</script>
+</body>
+</html>
